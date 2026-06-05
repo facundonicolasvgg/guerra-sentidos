@@ -25,7 +25,7 @@ const normalCards=[
 "{O} se colocará detrás de {V} y le dará un abrazo muy apretado durante 45 segundos. Ninguno de los dos puede hablar durante este tiempo.",
 "{V} debe imitar de forma exagerada y divertida un hábito o gesto cotidiano de {O}. Si {O} se ríe, {V} se salva del castigo.",
 "{O} seleccionará un vídeo corto o una foto divertida de su galería y {V} tendrá que recrear la pose exacta que aparezca en la pantalla.",
-"{V} tiene que confesar cuál es la parte del cuerpo de {O} que más le gusta mirar en secreto cuando no se da cuenta.",
+"{V} tiene que confessar cuál es la parte del cuerpo de {O} que más le gusta mirar en secreto cuando no se da cuenta.",
 "{O} va a poner una canción. {V} debe bailar de manera sensual frente a {O} durante los primeros 30 segundos del tema.",
 "{V} debe permitir que {O} le haga cosquillas en las costillas o los pies durante 15 segundos sin intentar apartar las manos de {O}.",
 "{O} elegirá un objeto aleatorio. {V} tiene que intentar vendarse los ojos y dibujar ese objeto en un papel. {O} debe adivinar qué es.",
@@ -137,7 +137,7 @@ function getCard(){
             rawText = sexualCards[sexualCards.length-1].text;
             imgUrl = sexualCards[sexualCards.length-1].img;
         }
-    }else if (!climaxMode && playerVCounts[v] === 4) {
+    }else if (!climaxMode && playerVCounts[v] === 4 && v === players[0]) {
         rawText = tarjetaEspecialTurno4;
     }else{
         if(usedNormalCards.length === normalCards.length){
