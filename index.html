@@ -444,9 +444,9 @@ function getCard(){
                 consQ.innerHTML = `<strong>EL PRECIO DE FALLAR EL RETO:</strong><br>• Si no logras cumplir el reto sensorial o responder bien, te quitas 1 prenda 👙 o tomas 2 tragos largos 🍻 (A elección del rival).`;
             } else {
                 // A partir de la tarjeta 10: Aleatoriedad absoluta
-                let randomPenalty = Math.random() < 0.5 ? "prenda" : "trago";
+                let randomPenalty = Math.random() < 0.75 ? "prenda" : "trago";
                 if(randomPenalty === "prenda") {
-                    consQ.innerHTML = `<strong>EL PRECIO DE FALLAR EL RETO (Suerte Aleatoria 🎲):</strong><br>• ¡Mala suerte! Si fallas el reto, debes quitarte 1 prenda 👙 obligatoriamente de inmediato.`;
+                    consQ.innerHTML = `<strong>EL PRECIO DE FALLAR EL RETO (Suerte Aleatoria 🎲):</strong><br>• ¡Mala suerte! Si fallas el reto, debes quitarte 1 prenda 👙 obligatoriamente.`;
                 } else {
                     consQ.innerHTML = `<strong>EL PRECIO DE FALLAR EL RETO (Suerte Aleatoria 🎲):</strong><br>• ¡Te has salvado de la ropa! Si fallas el reto, debes tomar 2 tragos largos 🍻.`;
                 }
