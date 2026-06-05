@@ -4,7 +4,7 @@ const normalCards=[
 "{O} debe vendarle los ojos a {V}. {O} preparará un sorbo de alguna bebida disponible. {V} debe adivinar qué bebida es solo por el gusto y el olor.",
 "{V} se tapa los ojos. {O} debe susurrarle una frase al oído de forma muy suave y lenta. {V} debe adivinar qué frase exacta ha dicho.",
 "{V} cierra los ojos. {O} le dará a probar un trozo pequeño de cualquier alimento o ingrediente que haya a mano. {V} debe adivinar qué comida es.",
-"{O} elegirá un objeto pequeño de la habitación. Con los ojos cerrados, {V} debe adivinar qué objeto es usando únicamente el tacto de sus manos.",
+"{O} elegirá un objeto pequeño de la habitación. Con los ojos closed, {V} debe adivinar qué objeto es usando únicamente el tacto de sus manos.",
 "{V} se tumba boca arriba y cierra los ojos. {O} utilizará las yemas de sus dedos para escribir una palabra en la espalda o el abdomen de {V}. {V} debe adivinar la palabra.",
 "{O} debe besar tres partes diferentes del cuerpo de {V} mientras {V} tiene los ojos cerrados. {V} tiene que adivinar exactamente qué zonas han sido besadas.",
 "{V} cierra los ojos. {O} buscará un objeto frío o caliente (como hielos, una taza, etc.) y lo pasará suavemente por la piel de {V}. {V} debe adivinar qué objeto es.",
@@ -43,7 +43,7 @@ const normalCards=[
 "{O} va a tomar el control del pelo de {V} y tendrá que hacerle un peinado original o divertido en menos de un minuto.",
 "{V} tiene que darle un masaje relajante de hombros a {O} utilizando únicamente sus antebrazos o codos de forma suave.",
 "{O} le dictará un trabalenguas rápido a {V}. Si {V} se traba o lo dice mal, sufrirá la penitencia de la prenda.",
-"👁️ [VISTA] - {V} debe cerrar los ojos. {O} cambiará un solo detalle de su postura o expresión facial. {V} abre los ojos y tiene 15 segundos para adivinar qué ha cambiado.",
+"👁️ [VISTA] - {V} debe cerrar los ojos. {O} cambiará un solo detalle de su postura o expression facial. {V} abre los ojos y tiene 15 segundos para adivinar qué ha cambiado.",
 "🖐️ [TACTO] - {O} debe delinear lentamente con la yema del dedo el contorno de los labios de {V} durante 20 segundos. Ninguno de los dos puede reírse.",
 "👂 [OOIDO] - {O} debe acercarse a la oreja de {V} y realizar tres respiraciones profundas y pausadas alternando la temperatura del aire. {V} debe mantener los ojos cerrados.",
 "👅 [GUSTO] - Sincronización aromática: Ambos debéis acercar vuestros vasos e inhalar el aroma de la bebida del otro al mismo tiempo, con los ojos fijos en la mirada del contrario durante 15 segundos.",
@@ -64,7 +64,7 @@ const sexualCards=[
 // 3. BLOQUE DE FELACIONES (Específico del catálogo)
 {img:"felacion_v1.png",text:"¡FELACIÓN V1! Él se tumba relajado boca arriba en el colchón. Ella se acomoda sobre él para iniciar una estimulación oral fluida y muy visual."},
 {img:"felacion_v2.png",text:"¡FELACIÓN V2! Él se sienta cómodamente al borde de la cama. Ella se arrodilla en el suelo frente a él, permitiendo un control de profundidad absoluto."},
-{img:"felacion_v3.png",text:"¡FELACIÓN V3! Variante vertical: Él se mantiene erguido mientras ella maneja el ritmo oral de rodillas, usando sus manos para acariciar los muslos de él."},
+{img:"felacion_v3.png",text:"¡FELACIÓN V3! Variante vertical: Él se mantiene erguido mientras ella maneja el ritmo oral de rodillas, usando sus manos para activar los muslos de él."},
 {img:"felacion_v4.png",text:"¡FELACIÓN V4! Él se tumba boca arriba y ella se coloca en paralelo a la inversa, buscando una posición de aproximación lateral cómoda para los labios."},
 {img:"felacion_v5.png",text:"¡FELACIÓN V5! Ella se recuesta bocarriba elevando ligeramente la cadera y él se aproxima para un juego de caricias orales mutuas antes del acto completo."},
 
@@ -114,10 +114,20 @@ const sexualCards=[
 ];
 
 let usedNormalCards=[];
+let playerVCounts = {};
+const tarjetaEspecialTurno4 = "¡RETO ESPECIAL ACUMULATIVO! {V} ha alcanzado su cuarto turno bajo control. Como castigo directo, {O} tiene derecho a elegir una zona del cuerpo de {V} para morder suavemente y mantener un contacto físico ininterrumpido durante los próximos 30 segundos.";
 
 function getCard(){
     let rawText="";
     let imgUrl="";
+    
+    const v = players[currentTurn];
+    const o = players[(currentTurn+1)%2];
+    
+    if (!playerVCounts[v]) {
+        playerVCounts[v] = 0;
+    }
+    playerVCounts[v]++;
     
     if(climaxMode){
         if(climaxIndex < sexualCards.length){
@@ -127,6 +137,8 @@ function getCard(){
             rawText = sexualCards[sexualCards.length-1].text;
             imgUrl = sexualCards[sexualCards.length-1].img;
         }
+    }else if (!climaxMode && playerVCounts[v] === 4) {
+        rawText = tarjetaEspecialTurno4;
     }else{
         if(usedNormalCards.length === normalCards.length){
             usedNormalCards = [];
@@ -140,10 +152,6 @@ function getCard(){
         rawText = normalCards[randomIndex];
     }
     
-    const v = players[currentTurn];
-    const o = players[(currentTurn+1)%2];
-    
-    // Tanto en normal como en clímax se parsean {V} y {O} dinámicamente
     document.getElementById('cardInstruction').innerHTML = rawText.replace(/{V}/g,v).replace(/{O}/g,o);
     
     const imgDiv = document.getElementById('posImage');
