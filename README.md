@@ -1,4 +1,4 @@
-# guerra-sentidos
+# Guerra-Sentidos
 
 https://facundonicolasvgg.github.io/guerra-sentidos/
 
