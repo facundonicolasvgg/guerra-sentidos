@@ -1,59 +1,182 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>La Guerra de los Sentidos - Edición Colegas</title><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><style>:root{--bg:#0b0612;--card-bg:#160f24;--accent:#ff2a5f;--accent-sub:#9d1df2;--text:#ffffff;--text-muted:#a59ba3;}body{margin:0;padding:20px;background:radial-gradient(circle at top, #1a0b2e, var(--bg));color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;box-sizing:border-box;}header{text-align:center;margin-bottom:15px;}h1{margin:0;font-size:1.8rem;background:linear-gradient(45deg,var(--accent),var(--accent-sub));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}header p{margin:5px 0 0 0;color:var(--text-muted);font-size:0.85rem;font-style:italic;}.container{width:100%;max-width:440px;display:flex;flex-direction:column;gap:15px;}h3{margin:0 0 10px 0;}.setup-section{background:var(--card-bg);padding:20px;border-radius:20px;border:1px solid #2d1b4e;box-shadow:0 10px 30px rgba(0,0,0,0.5);}.player-row{display:flex;gap:8px;margin-bottom:10px;align-items:center;}.input-field{padding:12px;border-radius:10px;border:1px solid #443266;background:#201435;color:white;font-size:1rem;flex:1;box-sizing:border-box;}.select-sex{padding:12px;border-radius:10px;border:1px solid #443266;background:#201435;color:white;font-size:1rem;cursor:pointer;}.btn{padding:14px;border:none;border-radius:12px;font-size:1rem;font-weight:bold;cursor:pointer;background:var(--accent);color:#fff;box-shadow:0 4px 15px rgba(255,42,95,0.3);width:100%;box-sizing:border-box;margin-top:5px;}.btn-secondary{background:#3b2366;box-shadow:none;margin-bottom:10px;}.btn-climax{background:linear-gradient(45deg, #2a085c, #660022);border:1px solid #ff0055;margin-top:10px;display:none;}#gameArea{display:none;flex-direction:column;gap:15px;width:100%;}.turn-indicator{text-align:center;font-size:1.1rem;font-weight:bold;color:#ffde59;margin-bottom:5px;}.game-card{width:100%;background:#201633;border:2px solid var(--accent);border-radius:20px;padding:25px;box-sizing:border-box;display:flex;flex-direction:column;box-shadow:0 8px 25px rgba(0,0,0,0.6);}.card-instruction{font-size:1.15rem;line-height:1.5;color:#e2d9f3;margin-bottom:15px;font-weight:500;}.card-consequence{background:rgba(255,42,95,0.1);border:1px dashed var(--accent);padding:12px;border-radius:8px;font-size:0.9rem;color:#ff7ea0;margin-top:10px;line-height:1.4;}</style></head><body><header><h1>La Guerra de los Sentidos</h1><p>Edición Colegas & Barra Libre</p></header><div class="container"><div class="setup-section" id="setupSection"><h3>Participantes</h3><div id="playersContainer"></div><button class="btn" id="startBtn">Comenzar Desmadre</button></div><div id="gameArea"><div class="turn-indicator" id="turnIndicator">Turno de...</div><div class="game-card"><div class="card-instruction" id="cardInstruction">Cargando retos...</div><div class="card-consequence" id="cardConsequence">Penitencia...</div></div><button class="btn" id="nextCardBtn">Siguiente Tarjeta</button><button class="btn btn-climax" id="climaxBtn">Alguien se ha quedado sin ropa</button></div></div><script>let players=[];let currentTurn=0;let cardCount=1;let climaxStage=0;let penitenceToggle=0;
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>La Guerra de los Sentidos</title><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><style>:root{--bg:#0b0612;--card-bg:#160f24;--accent:#ff2a5f;--accent-sub:#9d1df2;--text:#ffffff;--text-muted:#a59ba3;}body{margin:0;padding:20px;background:radial-gradient(circle at top, #1a0b2e, var(--bg));color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;box-sizing:border-box;}header{text-align:center;margin-bottom:15px;}h1{margin:0;font-size:1.8rem;background:linear-gradient(45deg,var(--accent),var(--accent-sub));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}header p{margin:5px 0 0 0;color:var(--text-muted);font-size:0.85rem;font-style:italic;}.container{width:100%;max-width:420px;display:flex;flex-direction:column;gap:15px;}h3{margin:0 0 10px 0;}.setup-section{background:var(--card-bg);padding:20px;border-radius:20px;border:1px solid #2d1b4e;box-shadow:0 10px 30px rgba(0,0,0,0.5);}.input-group{display:flex;flex-direction:column;gap:10px;margin-top:15px;}.input-field{padding:12px;border-radius:10px;border:1px solid #443266;background:#201435;color:white;font-size:1rem;box-sizing:border-box;width:100%;}.btn{padding:14px;border:none;border-radius:12px;font-size:1rem;font-weight:bold;cursor:pointer;background:var(--accent);color:#fff;box-shadow:0 4px 15px rgba(255,42,95,0.3);width:100%;box-sizing:border-box;margin-top:5px;}.btn-climax{background:linear-gradient(45deg, #cc0000, #660022);border:1px solid #ff0055;margin-top:10px;display:none;}#gameArea{display:none;flex-direction:column;gap:15px;width:100%;}.turn-indicator{text-align:center;font-size:1.1rem;font-weight:bold;color:#ffde59;margin-bottom:5px;}.game-card{width:100%;background:#201633;border:2px solid var(--accent);border-radius:20px;padding:25px;box-sizing:border-box;display:flex;flex-direction:column;box-shadow:0 8px 25px rgba(0,0,0,0.6);}.card-instruction{font-size:1.15rem;line-height:1.5;color:#e2d9f3;margin-bottom:15px;font-weight:500;}.pos-image{display:none;justify-content:center;align-items:center;margin:15px 0;background:#0d0818;padding:12px;border-radius:15px;border:1px solid rgba(255,42,95,0.4);}.pos-image img{width:100%;max-height:220px;object-fit:contain;border-radius:10px;}.card-consequence{background:rgba(255,42,95,0.1);border:1px dashed var(--accent);padding:12px;border-radius:8px;font-size:0.9rem;color:#ff7ea0;margin-top:10px;line-height:1.4;}</style></head><body><header><h1>La Guerra de los Sentidos</h1><p>Edición Sincronizada SPC 🔥</p></header><div class="container"><div class="setup-section" id="setupSection"><h3>Configuración</h3><div class="input-group"><input type="text" id="p1" class="input-field" placeholder="Jugador/a 1"><input type="text" id="p2" class="input-field" placeholder="Jugador/a 2"><button class="btn" id="startBtn">Comenzar Juego</button></div></div><div id="gameArea"><div class="turn-indicator" id="turnIndicator">Turno de...</div><div class="game-card"><div class="card-instruction" id="cardInstruction">Esperando inicio...</div><div class="pos-image" id="posImage"></div><div class="card-consequence" id="cardConsequence">Penitencia...</div></div><button class="btn" id="nextCardBtn">Siguiente Tarjeta</button><button class="btn btn-climax" id="climaxBtn">Cuando alguien se quede desnudo pulsar aquí</button></div></div><script>let players=[];let currentTurn=0;let cardCount=1;let climaxMode=false;let climaxIndex=0;let penitenceToggle=0; // Alternador de castigos: 0 = Prenda, 1 = Bebida
 
-const poolFase1Orig=[
-"{P1} debe servirse un chupito extra, llenarlo hasta arriba y bebérselo sin usar las manos antes de que {P2} cuente hasta 5. ¡A toda pastilla!",
-"Duelo de tragos: {P1} y {P2} chocan sus vasos y tienen que dar 4 tragos largos seguidos sin apartar la mirada. El primero que mire a otro lado, se toma otro trago de regalo.",
-"El teléfono del pecado: {P1} tiene que enseñar la última foto de fiesta que tenga en su galería o meterse un chupito doble del tirón.",
-"{P1} tiene que imitar el gemido de un dibujo animado famoso. Si {P2} se parte de risa, {P2} bebe dos tragos. Si da cringe, se los toma {P1}.",
-"Cascada extrema: Ambos empiezan a beber de su copa a la vez. {P1} marca el ritmo y no puede parar hasta que tenga ganas, {P2} está obligado a aguantar el tipo.",
-"El susurro gamberro: {P1} le dice una burrada tremenda al oído a {P2}. Si {P2} repite en voz alta lo que ha escuchado, {P1} bebe. Si se calla por vergüenza, bebe {P2}.",
-"Piedra, papel o tijera alcohólico: Jugad una partida rápida. El que pierda se bebe la mitad de su vaso de un solo trago largo.",
-"El barman ciego: {P1} cierra los ojos y saca la lengua. {P2} pone una gota de su bebida en ella. Si {P1} no adivina qué alcohol es, se toma un chupito limpio.",
-"Regla estúpida: Durante los próximos 3 turnos, ninguno de los dos puede tocar su copa con la mano dominante. Quien falle, penalty de un trago.",
-"Apuesta de bar: {P1} tiene que adivinar si la lencería o ropa interior de {P2} hoy es lisa o tiene algún estampado/encaje. Si falla, {P1} se mete dos tragos.",
-"El dictador: {P1} obliga a {P2} a beber cada vez que {P1} use la palabra 'alcohol' durante este turno. ¡Habla con cuidado!",
-"Chupito entrelazado: Para demostrar el compadreo, {P1} y {P2} cruzan sus brazos y se toman un chupito entero a la vez sin tirar nada.",
-"{P1} debe adivinar de qué color es la prenda superior que lleva {P2} debajo de la sudadera o camiseta (sin mirar). Si falla, fondo blanco a su vaso.",
-"El espejo maldito: {P1} tiene que beber exactamente la misma cantidad que beba {P2} en este turno, pero multiplicada por dos. ¡Dale caña, {P2}!",
-"Pulsaciones altas: {P2} le toma el pulso a {P1} en la muñeca mientras le cuenta una anécdota subida de tono. Si el pulso se acelera, {P1} se toma un chupito."
+const normalCards=[
+"{O} debe vendarle los ojos a {V}. {O} preparará un sorbo de alguna bebida disponible. {V} debe adivinar qué bebida es solo por el gusto y el olor.",
+"{V} se tapa los ojos. {O} debe susurrarle una frase al oído de forma muy suave y lenta. {V} debe adivinar qué frase exacta ha dicho.",
+"{V} cierra los ojos. {O} le dará a probar un trozo pequeño de cualquier alimento o ingrediente que haya a mano. {V} debe adivinar qué comida es.",
+"{O} elegirá un objeto pequeño de la habitación. Con los ojos cerrados, {V} debe adivinar qué objeto es usando únicamente el tacto de sus manos.",
+"{V} se tumba boca arriba y cierra los ojos. {O} utilizará las yemas de sus dedos para escribir una palabra en la espalda o el abdomen de {V}. {V} debe adivinar la palabra.",
+"{O} debe besar tres partes diferentes del cuerpo de {V} mientras {V} tiene los ojos cerrados. {V} tiene que adivinar exactamente qué zonas han sido besadas.",
+"{V} cierra los ojos. {O} buscará un objeto frío o caliente (como hielos, una taza, etc.) y lo pasará suavemente por la piel de {V}. {V} debe adivinar qué objeto es.",
+"{O} tarareará una canción muy cerca del oído de {V} mientras este se tapa los ojos. {V} debe adivinar el nombre de la canción o el artista.",
+"{V} se venda los ojos. {O} acercará un perfume, desodorante o elemento con aroma a la nariz de {V}. {V} debe identificar con precisión qué olor es.",
+"{O} debe guiar las manos de {V} (que tiene los ojos cerrados) hacia una parte específica del cuerpo de {O}. {V} tiene que decir qué zona está tocando en 5 segundos.",
+"{V} debe mirar fijamente a los ojos de {O} durante 30 segundos sin sonreír ni parpadear. El primero que rompa la mirada pierde el reto.",
+"{O} le dará un masaje de un minuto a {V} en la zona que {V} elija, pero {O} debe hacerlo usando solo una mano.",
+"{V} tiene que confesar cuál es la fantasía en pareja que más le gustaría cumplir a corto plazo. Si se niega a responder, falla automáticamente.",
+"{O} elegirá una prenda de su propio armario o de la habitación y obligará a {V} a ponérsela encima de la ropa que ya lleva durante los próximos 3 turnos.",
+"{V} debe desbloquear su móvil y dejar que {O} lea el último chat de WhatsApp abierto durante 15 segundos enteros.",
+"{O} va a escribir un mensaje secreto en un trozo de papel o en su móvil y se lo mostrará a {V}. {V} debe leerlo en voz alta con tono seductor.",
+"{V} tiene que darle a {O} tres razones sinceras por las cuales le resulta irresistible físicamente.",
+"{O} tiene el poder de elegir qué prenda debe quitarse {V} ahora mismo, sin necesidad de que {V} falle ninguna pregunta.",
+"{V} debe morder sutilmente el lóbulo de la oreja de {O} y luego susurrarle qué es lo primero que pensó cuando se conocieron.",
+"{O} usará un mechón de su propio pelo o una prenda suave para hacerle cosquillas a {V} en el cuello o los pies durante 20 segundos. {V} no puede moverse.",
+"{V} tiene que hacerle un cumplido atrevido a {O} utilizando únicamente palabras que empiecen por la letra 'P'. Tiene 10 segundos para pensar.",
+"{O} se colocará detrás de {V} y le dará un abrazo muy apretado durante 45 segundos. Ninguno de los dos puede hablar durante este tiempo.",
+"{V} debe imitar de forma exagerada y divertida un hábito o gesto cotidiano de {O}. Si {O} se ríe, {V} se salva del castigo.",
+"{O} seleccionará un vídeo corto o una foto divertida de su galería y {V} tendrá que recrear la pose exacta que aparezca en la pantalla.",
+"{V} tiene que confesar cuál es la parte del cuerpo de {O} que más le gusta mirar en secreto cuando no se da cuenta.",
+"{O} va a poner una canción. {V} debe bailar de manera sensual frente a {O} durante los primeros 30 segundos del tema.",
+"{V} debe permitir que {O} le haga cosquillas en las costillas o los pies durante 15 segundos sin intentar apartar las manos de {O}.",
+"{O} elegirá un objeto aleatorio. {V} tiene que intentar vendarse los ojos y dibujar ese objeto en un papel. {O} debe adivinar qué es.",
+"{V} tiene que darle un beso de 10 segundos a {O} en la zona del cuerpo donde {O} prefiera recibirlo (excepto los labios).",
+"{O} le hará una pregunta de cultura general o de su propia relación a {V}. Si {V} responde mal o tarda más de 5 segundos, se aplica la penitencia.",
+"{V} tiene que describir detalladamente cómo sería una cita perfecta de 24 horas junto a {O} sin usar la palabra 'amor' o 'romántico'.",
+"{O} puede pedirle a {V} que realice una postura estirada de yoga o equilibrio durante 30 segundos seguidos sin caerse.",
+"{V} debe soplar suavemente sobre el cuello de {O} y luego darle un beso tierno justo en el mismo lugar.",
+"{O} se tumbará en la cama y {V} tendrá que hacerle un masaje express en los pies durante un minuto entero.",
+"{V} tiene que decir en voz alta las 3 cosas que cambiaría de la habitación en la que están si tuviera presupuesto ilimitado.",
+"{O} esconderá las llaves o un objeto pequeño en la habitación mientras {V} espera fuera. {V} tiene 30 segundos para encontrarlo al volver.",
+"{V} debe sentarse en el regazo de {O} de espaldas y mantener esa posición durante los siguientes dos turnos completos del juego.",
+"{O} elegirá una palabra difícil. {V} tiene que deletrearla al revés de forma fluida y sin equivocarse en menos de 10 segundos.",
+"{V} debe confesar un secreto inofensivo que nunca antes le haya contado a {O}.",
+"{O} va a tomar el control del pelo de {V} y tendrá que hacerle un peinado original o divertido en menos de un minuto.",
+"{V} tiene que darle un masaje relajante de hombros a {O} utilizando únicamente sus antebrazos o codos de forma suave.",
+"{O} le dictará un trabalenguas rápido a {V}. Si {V} se traba o lo dice mal, sufrirá la penitencia de la prenda.",
+// NUEVAS TARJETAS BASADAS EN SENTIDOS (Sin mención directa a alcohol/ropa en enunciado)
+"👁️ [VISTA] - {V} debe cerrar los ojos. {O} cambiará un solo detalle de su postura o expresión facial. {V} abre los ojos y tiene 15 segundos para adivinar qué ha cambiado.",
+"🖐️ [TACTO] - {O} debe delinear lentamente con la yema del dedo el contorno de los labios de {V} durante 20 segundos. Ninguno de los dos puede reírse.",
+"👂 [OÍDO] - {O} debe acercarse a la oreja de {V} y realizar tres respiraciones profundas y pausadas alternando la temperatura del aire. {V} debe mantener los ojos cerrados.",
+"👅 [GUSTO] - Sincronización aromática: Ambos debéis acercar vuestros vasos e inhalar el aroma de la bebida del otro al mismo tiempo, con los ojos fijos en la mirada del contrario durante 15 segundos.",
+"👁️ [VISTA] - {V} debe mirar fijamente el cuello y clavícula de {O} durante 20 segundos sin desviar la mirada bajo ninguna circunstancia, mientras {O} le sonríe de forma pícara.",
+"🖐️ [TACTO] - Juego de temperaturas: {O} frotará sus manos para calentarlas y luego tocará las mejillas de {V} durante 15 segundos evaluando la reacción en su piel."
 ];
 
-const poolFase2Orig=[
-"El chupito del traspaso: {P1} se mete un sorbo de alcohol en la boca y debe pasárselo a {P2} directamente de boca a boca sin que se caiga una gota. ¡Habilidad pura!",
-"Cosquillas con castigo: {P1} le hace cosquillas salvajes a {P2} en los costados durante 10 segundos. Por cada quejido o risa que suelte {P2}, es un trago largo para ella.",
-"{P1} debe guiar la mano de {P2} por dentro de su camiseta para que le toque la espalda o el abdomen descalzo, mientras {P1} se baja media copa de golpe.",
-"El barman atrevido: {P1} vierte un chorrito de licor en la clavícula o el cuello de {P2} y debe tomárselo directamente con los labios. Si le da timidez, dos chupitos de castigo.",
-"Beso de película: {P1} y {P2} deben morder el mismo hielo a la vez por los extremos opuestos y aguantar así mientras se toman un trago largo cada uno.",
-"El relevo motero: {P1} se sienta detrás de {P2} abrazándola por la cintura, y tiene que sostenerle el vaso en la boca para que {P2} beba tres tragos seguidos.",
-"Roce eléctrico: {P1} debe pasar sus manos lentamente por los muslos de {P2} (por encima de la ropa) mientras {P2} intenta recitar el abecedario al revés. Si se equivoca, chupito.",
-"El escáner de barra: {P1} mira a {P2} de arriba a abajo como si la estuviera juzgando en una discoteca. Mientras dure la mirada (15 segundos), {P2} no para de beber.",
-"Sin manos 2.0: {P1} tiene que levantar el vaso de {P2} de la mesa usando solo la boca y conseguir que {P2} dé un trago de él. Si se derrama, castigo para los dos.",
-"El secreto del bar: {P1} le confiesa a {P2} cuál es la mayor locura que ha hecho estando borracho en su vida. Si la historia es floja, {P2} le manda un chupito.",
-"La mordida de hombro: {P1} le da un mordisco juguetón en el hombro a {P2} (por encima de la ropa). Si {P2} se queja, se toma un trago largo. Si le gusta, brinda.",
-"Líneas calientes: {P1} tiene que decirle a {P2} el piropo más basto, divertido y sugerente que se le ocurra mirándola a los ojos. Si alguno se ríe, chupito para ese."
+const sexualCards=[
+{img:"misionero.png",text:"¡MISIONERO CLÁSICO! Ella se tumba bocarriba con las piernas abiertas. Él se coloca encima para mantener un contacto cara a cara y besos profundos."},
+{img:"misionero_v4.png",text:"¡MISIONERO VARIANTE 4! Ella flexiona las rodillas elevándolas directamente hacia su pecho, mientras él penetra desde arriba para cambiar por completo el ángulo interno."},
+{img:"misionero_v8.png",text:"¡MISIONERO V8! Ella estira una pierna sobre la cama mientras eleva la otra apoyándola firmemente sobre la cadera u hombro de él, permitiendo una entrada asimétrica muy profunda."},
+{img:"misionero_v11.png",text:"¡MISIONERO V11! Ella cruza con fuerza sus piernas alrededor de la cintura o la espalda de él, quien se inclina al máximo hacia delante para lograr un roce total cuerpo a cuerpo."},
+{img:"loto_v1.png",text:"¡LOTO V1! Él se sienta con las piernas cruzadas en la cama. Ella se sienta directamente encima a horcajadas, rodeando la cintura de él con sus piernas para un abrazo íntimo."},
+{img:"loto_v2.png",text:"¡LOTO V2! Manteniendo la base sentada del Loto, él se inclina un poco hacia atrás apoyando sus manos en el colchón para ganar estabilidad y permitir que ella maneje el ritmo vertical."},
+{img:"loto_v3.png",text:"¡LOTO V3! En esta variación del Loto, ella estira las piernas hacia los lados de la cadera de él, modificando la apertura de la pelvis para buscar un balanceo diferente."},
+{img:"loto_v4.png",text:"¡LOTO V4! Él se mantiene sentado y ella se coloca de espaldas a él sobre su regazo. De esta forma, él tiene los brazos totalmente libres para acariciar todo el torso de ella."},
+{img:"loto_v5.png",text:"¡LOTO V5! Él se arrodilla de forma vertical y ella se sienta sobre sus muslos entrelazando las piernas a su alrededor. Requiere algo de equilibrio, pero genera un juego de alturas muy intenso."},
+{img:"loto_v6.png",text:"¡LOTO V6! Ambos se sientan frente a frente en la cama pero con las piernas abiertas e interconectadas de manera alterna, ideal para un ritmo pausado, miradas fijas y roces lentos."},
+{img:"loto_v7.png",text:"¡LOTO V7! Los dos cuerpos quedan completamente pegados en loto estrecho, mientras él aprovecha el balanceo para sostener y guiar suavemente las caderas de ella a cada ritmo."},
+{img:"perro_v1.png",text:"¡ESTILO PERRO V1! Ella se coloca boca abajo o apoyando los antebrazos planos contra el colchón, elevando la pelvis. Él realiza la penetración desde atrás de forma muy directa."},
+{img:"perro_v2.png",text:"¡ESTILO PERRO V2! Ella se coloca a cuatro patas, apoyando de forma estable rodillas y manos en la cama, mientras él toma el control total del ritmo de empuje desde atrás."},
+{img:"perro_v3.png",text:"¡ESTILO PERRO V3! Ella baja un poco más el pecho hacia el colchón arqueando sutilmente la espalda baja. Él se acopla firmemente sujetando con seguridad las caderas de ella."},
+{img:"perro_v4.png",text:"¡ESTILO PERRO V4! Ella junta por completo las rodillas y las piernas mientras está a cuatro patas, estrechando el canal. Él empuja desde atrás manteniendo una gran fricción."},
+{img:"perro_v5.png",text:"¡ESTILO PERRO V5! Ella se inclina hacia delante apoyando los brazos sobre el borde de la cama o un mueble alto, mientras él maneja la intensidad y el ritmo desde atrás con total comodidad."},
+{img:"perro_v6.png",text:"¡ESTILO PERRO V6! Variación tumbada: ella se recuesta completamente boca abajo estirando las piernas, y él se posiciona justo encima de su espalda para entrar desde atrás."},
+{img:"perro_v7.png",text:"¡ESTILO PERRO V7! Ella se apoya a cuatro patas pero eleva una de sus piernas hacia un lado en ángulo para abrir la zona de penetración y permitir que él estimule nuevas áreas."},
+{img:"perro_v8.png",text:"¡ESTILO PERRO V8! Ella arquea el torso hacia atrás buscando conectar con la mirada o los besos de él, quien la sostiene firmemente por la cintura desde atrás durante el acto."},
+{img:"perro_v9.png",text:"¡ESTILO PERRO V9! Ella se apoya con firmeza hacia delante y él cambia ligeramente el ángulo de aproximación lateral para encontrar un punto de estimulación y recorrido único."},
+{img:"tijeras_v1.png",text:"¡TIJERAS V1! Ambos os tumbáis de lado frente a frente en la cama, entrelazando vuestras piernas de forma alterna (como una tijera). Una postura muy cómoda para un ritmo lento."},
+{img:"tijeras_v2.png",text:"¡TIJERAS V2! Estando de lado, uno de los dos eleva su pierna superior colocándola sobre el hombro del otro, modificando la profundidad y liberando las manos para caricias libres."},
+{img:"tijeras_v3.png",text:"¡TIJERAS V3! De lado y entrelazados, variáis juntos la inclinación de la pelvis hacia atrás o hacia delante buscando una fricción constante en las zonas más sensibles."},
+{img:"tijeras_v4.png",text:"¡TIJERAS V4! Los dos se colocan en un ángulo oblicuo sobre el colchón, casi bocarriba pero manteniendo los muslos cruzados con firmeza para un contacto pélvico total."},
+{img:"tijeras_v5.png",text:"¡TIJERAS V5! Máxima presión y contacto lateral, permitiendo movimientos de balanceo cortos pero muy intensos gracias al cruce apretado de las piernas."},
+{img:"perrodepie_v1.png",text:"¡PERRO DE PIE V1! Ambos estáis de pie. Ella se inclina hacia delante apoyando sus manos en la cama o en un mueble firme. Él se posiciona justo detrás totalmente erguido."},
+{img:"perrodepie_v2.png",text:"¡PERRO DE PIE V2! Ella flexiona un poco más el torso hacia abajo para cambiar el eje de entrada vertical. Él controla las caderas de ella desde atrás cómodamente de pie."},
+{img:"perrodepie_v3.png",text:"¡PERRO DE PIE V3! Ella se apoya de manos contra la pared dando la espalda. Él se acerca por detrás manteniendo una postura vertical muy firme, ideal para un ritmo intenso."},
+{img:"perrodepie_v4.png",text:"¡PERRO DE PIE V4! Ella eleva una pierna apoyándola sobre el borde de la cama o una superficie alta, mientras él penetra por detrás de pie en una posición asimétrica."},
+{img:"perrodepie_v5.png",text:"¡PERRO DE PIE V5! Ella se inclina completamente hacia delante intentando tocar el suelo con las manos, mientras él realiza la penetración trasera totalmente erguido de pie."},
+{img:"perrodepie_v6.png",text:"¡PERRO DE PIE V6! Con él manteniéndose firme de pie, levanta sutilmente una de las piernas de ella hacia atrás y hacia arriba para inclinar por completo el ángulo de penetración."},
+{img:"perrodepie_v7.png",text:"¡PERRO DE PIE V7! Con él de pie en el suelo, ella se coloca sobre una superficie sutilmente más alta (como el escalón de la cama) para lograr una alineación de caderas perfecta."},
+{img:"perrodepie_v8.png",text:"¡PERRO DE PIE V8! Ella se apoya hacia delante arqueando sutilmente el cuello hacia atrás para buscar el contacto con él, quien marca el ritmo vertical de pie con firmeza."},
+{img:"perrodepie_v9.png",text:"¡PERRO DE PIE V9! Ajuste final en vertical: ambos de pie y pegados espalda con pecho, buscando pequeños movimientos circulares altamente placenteros gracias a la fricción."},
+{img:"",text:"¡CONEXIÓN FINAL! Habéis recorrido todo el repertorio sincronizado. Elegid vuestra categoría favorita y disfrutad libremente a vuestro propio ritmo."}
 ];
 
-const poolFase3Orig=[
-"RETO DE VELOCIDAD: {P1} tiene 5 segundos para intentar desabrochar un botón o el cierre de una prenda de {P2} usando únicamente los dedos de una mano. Si falla, chupito doble.",
-"DESAFÍO DEL HIELO BRUTAL: Ambos se meten un hielo en la boca. El primero que consiga masticarlo o derretirlo del todo le mete tres chupitos seguidos de castigo al otro.",
-"EL PULSO DE BAR: Agarraos de las manos y haced un pulso clásico sobre la mesa. El que pierda se toma un fondo blanco de su vaso inmediatamente.",
-"RETO A CIEGAS: {P1} se tapa los ojos. {P2} frota un vaso helado por alguna zona de la piel de {P1}. Si {P1} no adivina el sitio exacto en 3 segundos, se bebe el vaso.",
-"AGUANTE DE TRAGO: Los dos empezáis a beber de vuestros vasos a la vez. El primero que se quede sin aire o pare de tragar pierde el reto y se quita una prenda.",
-"RETO FÍSICO GAMBERRO: {P1} tiene que cargar a hombros o en vilo a {P2} durante 10 segundos enteros. Si fallan o se caen, penalización de alcohol máxima para los dos."
-];
+let usedNormalCards=[];
 
-const poolSexual=[
-"¡FIN DEL JUEGO GUIADO! El motor por turnos ha terminado. A partir de aquí la barra libre es totalmente vuestra y los retos los ponéis vosotros en el colchón. ¡Que se os dé bien!"
-];
+function getCard(){
+    let rawText="";
+    let imgUrl="";
+    
+    if(climaxMode){
+        if(climaxIndex < sexualCards.length){
+            rawText = sexualCards[climaxIndex].text;
+            imgUrl = sexualCards[climaxIndex].img;
+        }else{
+            rawText = sexualCards[sexualCards.length-1].text;
+            imgUrl = sexualCards[sexualCards.length-1].img;
+        }
+    }else{
+        if(usedNormalCards.length === normalCards.length){
+            usedNormalCards = [];
+        }
+        let randomIndex;
+        do{
+            randomIndex = Math.floor(Math.random()*normalCards.length);
+        }while(usedNormalCards.includes(randomIndex));
+        
+        usedNormalCards.push(randomIndex);
+        rawText = normalCards[randomIndex];
+    }
+    
+    const v = players[currentTurn];
+    const o = players[(currentTurn+1)%2];
+    
+    document.getElementById('cardInstruction').innerHTML = climaxMode ? rawText : rawText.replace(/{V}/g,v).replace(/{O}/g,o);
+    
+    const imgDiv = document.getElementById('posImage');
+    if(climaxMode && imgUrl){
+        imgDiv.innerHTML = `<img src="${imgUrl}" alt="Posición">`;
+        imgDiv.style.display = 'flex';
+    }else{
+        imgDiv.style.display = 'none';
+    }
+    
+    const consQ = document.getElementById('cardConsequence');
+    if(climaxMode){
+        consQ.innerHTML = `<strong>MODO CLÍMAX:</strong> Ambos estáis al descubierto. Mantened la posición y disfrutad del momento.`;
+    }else{
+        // Lógica de penitencia que alterna dinámicamente entre Ropa y Bebida
+        if(penitenceToggle === 0){
+            consQ.innerHTML = `<strong>SI ${v.toUpperCase()} FALLA:</strong> ${o} elige y le quita **una prenda de ropa** a ${v}.`;
+            penitenceToggle = 1;
+        }else{
+            consQ.innerHTML = `<strong>SI ${v.toUpperCase()} FALLA:</strong> ${v} debe tomarse **un chupito / trago fondo blanco** inmediatamente.`;
+            penitenceToggle = 0;
+        }
+    }
+    document.getElementById('turnIndicator').textContent = `Turno de: ${v}`;
+}
 
-let poolFase1 = JSON.parse(JSON.stringify(poolFase1Orig));
-let poolFase2 = JSON.parse(JSON.stringify(poolFase2Orig));
-let poolFase3 = JSON.parse(JSON.stringify(poolFase3Orig));
+document.getElementById('startBtn').addEventListener('click',()=>{
+    const p1 = document.getElementById('p1').value.trim();
+    const p2 = document.getElementById('p2').value.trim();
+    if(p1 && p2){
+        players = [p1,p2];
+        document.getElementById('setupSection').style.display = 'none';
+        document.getElementById('gameArea').style.display = 'flex';
+        getCard();
+    }else{
+        alert("Por favor, introducid ambos nombres para comenzar.");
+    }
+});
 
-window.onload=function(){for(let i=1;i<=2;i++) addPlayerRow();}
+document.getElementById('nextCardBtn').addEventListener('click',()=>{
+    if(climaxMode){
+        climaxIndex++;
+    }else{
+        cardCount++;
+    }
+    currentTurn = (currentTurn+1)%2;
+    if(cardCount >= 2 && !climaxMode){
+        document.getElementById('climaxBtn').style.display = 'block';
+    }
+    getCard();
+});
 
-function addPlayerRow(){const container=document.getElementById('playersContainer');const count=container.children.length+1;const row=document.createElement('div');row.className='player-row';row.innerHTML=`<input type="text" class="input-field p-name" placeholder="Nombre ${count}"><select class="select-sex p-sex" style="display:none;"><option value="H">M</option></select>`;container.appendChild(row);}
-
-document.getElementById('startBtn').addEventListener('click',()=>{players=[];const names=document.getElementsByClassName('p-name');for(let i=0;i<names.length;i++){let n=names[i].value.trim();if(n){players.push({id: i, name:n});}}if(players.length<2){alert("Introduce los 2 nombres.");return;}document.getElementById('setupSection').style.display='none';document.getElementById('gameArea').style.display='flex';getCard();});
-
-function getCard(){let rawText="";const activePlayer=players[currentTurn];const nextPlayer=players[(currentTurn+1)%players.length];if(climaxStage===0){let poolTier=poolFase1;if(cardCount>6) poolTier=poolFase2;if(poolTier.length===0) poolTier=poolFase2Orig;let idx=Math.floor(Math.random()*poolTier.length);rawText=poolTier[idx];poolTier.splice(idx,1);}else if(climaxStage===1){let poolTier=poolFase3;if(poolTier.length===0) poolTier=poolFase3Orig;let idx=Math.floor(Math.random()*poolTier.length);rawText=poolTier[idx];poolTier.splice(idx,1);}else{rawText=poolSexual[0];}let finalInstruction=rawText.replace(/{P1}/g,activePlayer.name).replace(/{P2}/g,nextPlayer.name);document.getElementById('cardInstruction').innerHTML=finalInstruction;document.getElementById('turnIndicator').textContent=`Turno de: ${activePlayer.name}`;const consQ=document.getElementById('cardConsequence');if(climaxStage===0 || climaxStage===1){if(penitenceToggle===0){consQ.innerHTML=`<strong>PENITENCIA OBLIGATORIA:</strong> Si ${activePlayer.name} no cumple el reto, se quita **una prenda de ropa** ahora mismo.`;penitenceToggle=1;}else{consQ.innerHTML=`<strong>PENITENCIA OBLIGATORIA:</strong> Si ${activePlayer.name} no cumple el reto, se mete **un chupito fondo blanco** ya.`;penitenceToggle=0;}}else{consQ.innerHTML=`Fase libre activa.`;}}document.getElementById('nextCardBtn').addEventListener('click',()=>{cardCount++;currentTurn=(currentTurn+1)%players.length;if(cardCount>=4 && climaxStage===0){document.getElementById('climaxBtn').style.display='block';}getCard();});document.getElementById('climaxBtn').addEventListener('click',()=>{if(climaxStage===0){climaxStage=1;cardCount=0;document.getElementById('climaxBtn').textContent="Alguien más se ha desnudado";getCard();}else if(climaxStage===1){climaxStage=2;cardCount=0;document.getElementById('climaxBtn').style.display='none';getCard();}});</script></body></html>
+document.getElementById('climaxBtn').addEventListener('click',()=>{
+    climaxMode = true;
+    document.getElementById('climaxBtn').style.display = 'none';
+    currentTurn = (currentTurn+1)%2;
+    climaxIndex = 0;
+    getCard();
+});
+</script></body></html>
