@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>La Guerra de los Sentidos</title><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><style>:root{--bg:#0b0612;--card-bg:#160f24;--accent:#ff2a5f;--accent-sub:#9d1df2;--text:#ffffff;--text-muted:#a59ba3;}body{margin:0;padding:20px;background:radial-gradient(circle at top, #1a0b2e, var(--bg));color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;box-sizing:border-box;}header{text-align:center;margin-bottom:15px;}h1{margin:0;font-size:1.8rem;background:linear-gradient(45deg,var(--accent),var(--accent-sub));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}header p{margin:5px 0 0 0;color:var(--text-muted);font-size:0.85rem;font-style:italic;}.container{width:100%;max-width:420px;display:flex;flex-direction:column;gap:15px;}h3{margin:0 0 10px 0;}.setup-section{background:var(--card-bg);padding:20px;border-radius:20px;border:1px solid #2d1b4e;box-shadow:0 10px 30px rgba(0,0,0,0.5);}.input-group{display:flex;flex-direction:column;gap:10px;margin-top:15px;}.input-field{padding:12px;border-radius:10px;border:1px solid #443266;background:#201435;color:white;font-size:1rem;box-sizing:border-box;width:100%;}.btn{padding:14px;border:none;border-radius:12px;font-size:1rem;font-weight:bold;cursor:pointer;background:var(--accent);color:#fff;box-shadow:0 4px 15px rgba(255,42,95,0.3);width:100%;box-sizing:border-box;margin-top:5px;}.btn-climax{background:linear-gradient(45deg, #cc0000, #660022);border:1px solid #ff0055;margin-top:10px;display:none;}#gameArea{display:none;flex-direction:column;gap:15px;width:100%;}.turn-indicator{text-align:center;font-size:1.1rem;font-weight:bold;color:#ffde59;margin-bottom:5px;}.game-card{width:100%;background:#201633;border:2px solid var(--accent);border-radius:20px;padding:25px;box-sizing:border-box;display:flex;flex-direction:column;box-shadow:0 8px 25px rgba(0,0,0,0.6);}.card-instruction{font-size:1.15rem;line-height:1.5;color:#e2d9f3;margin-bottom:15px;font-weight:500;}.pos-image{display:none;justify-content:center;align-items:center;margin:15px 0;background:#0d0818;padding:12px;border-radius:15px;border:1px solid rgba(255,42,95,0.4);}.pos-image img{width:100%;max-height:220px;object-fit:contain;border-radius:10px;}.card-consequence{background:rgba(255,42,95,0.1);border:1px dashed var(--accent);padding:12px;border-radius:8px;font-size:0.9rem;color:#ff7ea0;margin-top:10px;line-height:1.4;}</style></head><body><header><h1>La Guerra de los Sentidos</h1><p>Edición Sincronizada SPC 🔥</p></header><div class="container"><div class="setup-section" id="setupSection"><h3>Configuración</h3><div class="input-group"><input type="text" id="p1" class="input-field" placeholder="Jugador/a 1"><input type="text" id="p2" class="input-field" placeholder="Jugador/a 2"><button class="btn" id="startBtn">Comenzar Juego</button></div></div><div id="gameArea"><div class="turn-indicator" id="turnIndicator">Turno de...</div><div class="game-card"><div class="card-instruction" id="cardInstruction">Esperando inicio...</div><div class="pos-image" id="posImage"></div><div class="card-consequence" id="cardConsequence">Penitencia...</div></div><button class="btn" id="nextCardBtn">Siguiente Tarjeta</button><button class="btn btn-climax" id="climaxBtn">Cuando alguien se quede desnudo pulsar aquí</button></div></div><script>let players=[];let currentTurn=0;let cardCount=1;let climaxMode=false;let climaxIndex=0;let penitenceToggle=0; // Alternador de castigos: 0 = Prenda, 1 = Bebida
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>La Guerra de los Sentidos</title><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><style>:root{--bg:#0b0612;--card-bg:#160f24;--accent:#ff2a5f;--accent-sub:#9d1df2;--text:#ffffff;--text-muted:#a59ba3;}body{margin:0;padding:20px;background:radial-gradient(circle at top, #1a0b2e, var(--bg));color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;box-sizing:border-box;}header{text-align:center;margin-bottom:15px;}h1{margin:0;font-size:1.8rem;background:linear-gradient(45deg,var(--accent),var(--accent-sub));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}header p{margin:5px 0 0 0;color:var(--text-muted);font-size:0.85rem;font-style:italic;}.container{width:100%;max-width:420px;display:flex;flex-direction:column;gap:15px;}h3{margin:0 0 10px 0;}.setup-section{background:var(--card-bg);padding:20px;border-radius:20px;border:1px solid #2d1b4e;box-shadow:0 10px 30px rgba(0,0,0,0.5);}.input-group{display:flex;flex-direction:column;gap:10px;margin-top:15px;}.input-field{padding:12px;border-radius:10px;border:1px solid #443266;background:#201435;color:white;font-size:1rem;box-sizing:border-box;width:100%;}.btn{padding:14px;border:none;border-radius:12px;font-size:1rem;font-weight:bold;cursor:pointer;background:var(--accent);color:#fff;box-shadow:0 4px 15px rgba(255,42,95,0.3);width:100%;box-sizing:border-box;margin-top:5px;}.btn-climax{background:linear-gradient(45deg, #cc0000, #660022);border:1px solid #ff0055;margin-top:10px;display:none;}#gameArea{display:none;flex-direction:column;gap:15px;width:100%;}.turn-indicator{text-align:center;font-size:1.1rem;font-weight:bold;color:#ffde59;margin-bottom:5px;}.game-card{width:100%;background:#201633;border:2px solid var(--accent);border-radius:20px;padding:25px;box-sizing:border-box;display:flex;flex-direction:column;box-shadow:0 8px 25px rgba(0,0,0,0.6);}.card-instruction{font-size:1.15rem;line-height:1.5;color:#e2d9f3;margin-bottom:15px;font-weight:500;}.pos-image{display:none;justify-content:center;align-items:center;margin:15px 0;background:#0d0818;padding:12px;border-radius:15px;border:1px solid rgba(255,42,95,0.4);}.pos-image img{width:100%;max-height:220px;object-fit:contain;border-radius:10px;}.card-consequence{background:rgba(255,42,95,0.1);border:1px dashed var(--accent);padding:12px;border-radius:8px;font-size:0.9rem;color:#ff7ea0;margin-top:10px;line-height:1.4;}</style></head><body><header><h1>La Guerra de los Sentidos</h1><p>Edición Sincronizada SPC 🔥</p></header><div class="container"><div class="setup-section" id="setupSection"><h3>Configuración</h3><div class="input-group"><input type="text" id="p1" class="input-field" placeholder="Jugador/a 1"><input type="text" id="p2" class="input-field" placeholder="Jugador/a 2"><button class="btn" id="startBtn">Comenzar Juego</button></div></div><div id="gameArea"><div class="turn-indicator" id="turnIndicator">Turno de...</div><div class="game-card"><div class="card-instruction" id="cardInstruction">Esperando inicio...</div><div class="pos-image" id="posImage"></div><div class="card-consequence" id="cardConsequence">Penitencia...</div></div><button class="btn" id="nextCardBtn">Siguiente Tarjeta</button><button class="btn btn-climax" id="climaxBtn">Cuando alguien se quede desnudo pulsar aquí</button></div></div><script>let players=[];let currentTurn=0;let cardCount=1;let climaxMode=false;let climaxIndex=0;let penitenceToggle=0;
 
 const normalCards=[
 "{O} debe vendarle los ojos a {V}. {O} preparará un sorbo de alguna bebida disponible. {V} debe adivinar qué bebida es solo por el gusto y el olor.",
@@ -43,16 +43,39 @@ const normalCards=[
 "{O} va a tomar el control del pelo de {V} y tendrá que hacerle un peinado original o divertido en menos de un minuto.",
 "{V} tiene que darle un masaje relajante de hombros a {O} utilizando únicamente sus antebrazos o codos de forma suave.",
 "{O} le dictará un trabalenguas rápido a {V}. Si {V} se traba o lo dice mal, sufrirá la penitencia de la prenda.",
-// NUEVAS TARJETAS BASADAS EN SENTIDOS (Sin mención directa a alcohol/ropa en enunciado)
 "👁️ [VISTA] - {V} debe cerrar los ojos. {O} cambiará un solo detalle de su postura o expresión facial. {V} abre los ojos y tiene 15 segundos para adivinar qué ha cambiado.",
 "🖐️ [TACTO] - {O} debe delinear lentamente con la yema del dedo el contorno de los labios de {V} durante 20 segundos. Ninguno de los dos puede reírse.",
-"👂 [OÍDO] - {O} debe acercarse a la oreja de {V} y realizar tres respiraciones profundas y pausadas alternando la temperatura del aire. {V} debe mantener los ojos cerrados.",
+"👂 [OOIDO] - {O} debe acercarse a la oreja de {V} y realizar tres respiraciones profundas y pausadas alternando la temperatura del aire. {V} debe mantener los ojos cerrados.",
 "👅 [GUSTO] - Sincronización aromática: Ambos debéis acercar vuestros vasos e inhalar el aroma de la bebida del otro al mismo tiempo, con los ojos fijos en la mirada del contrario durante 15 segundos.",
 "👁️ [VISTA] - {V} debe mirar fijamente el cuello y clavícula de {O} durante 20 segundos sin desviar la mirada bajo ninguna circunstancia, mientras {O} le sonríe de forma pícara.",
 "🖐️ [TACTO] - Juego de temperaturas: {O} frotará sus manos para calentarlas y luego tocará las mejillas de {V} durante 15 segundos evaluando la reacción en su piel."
 ];
 
 const sexualCards=[
+// 1. PREPARATORIA: BESOS Y CARICIAS
+{img:"",text:"¡PREPARATORIA: BESOS LENTOS! {O} y {V} deben unirse en un beso francés profundo, pausado y muy húmedo durante un mínimo de 30 segundos, saboreándose por completo."},
+{img:"",text:"¡PREPARATORIA: CARICIAS ERÓGENAS! {O} desliza sus manos desnudas recorriendo libremente el pecho, el abdomen y los muslos de {V} con pasadas suaves para encender la piel."},
+{img:"",text:"¡PREPARATORIA: BESOS EN EL CUELLO! {O} abraza a {V} por detrás y comienza a dejar un rastro de besos calientes y pequeñas succiones desde la nuca hasta la clavícula."},
+
+// 2. PREPARATORIA: MASTURBACIONES
+{img:"",text:"¡PREPARACIÓN PHYSICAL: ESTIMULACIÓN MANUAL REPROS! {O} toma la iniciativa utilizando sus manos y dedos para masajear y estimular la zona íntima de {V}, buscando sus puntos más sensibles."},
+{img:"",text:"¡PREPARACIÓN PHYSICAL: MASTURBACIÓN MUTUA! Tumbaos cara a cara muy juntos; ambos debéis usar vuestras manos para estimular los genitales del otro en una sincronía total de ritmos."},
+
+// 3. BLOQUE DE FELACIONES (Específico del catálogo)
+{img:"felacion_v1.png",text:"¡FELACIÓN V1! Él se tumba relajado boca arriba en el colchón. Ella se acomoda sobre él para iniciar una estimulación oral fluida y muy visual."},
+{img:"felacion_v2.png",text:"¡FELACIÓN V2! Él se sienta cómodamente al borde de la cama. Ella se arrodilla en el suelo frente a él, permitiendo un control de profundidad absoluto."},
+{img:"felacion_v3.png",text:"¡FELACIÓN V3! Variante vertical: Él se mantiene erguido mientras ella maneja el ritmo oral de rodillas, usando sus manos para acariciar los muslos de él."},
+{img:"felacion_v4.png",text:"¡FELACIÓN V4! Él se tumba boca arriba y ella se coloca en paralelo a la inversa, buscando una posición de aproximación lateral cómoda para los labios."},
+{img:"felacion_v5.png",text:"¡FELACIÓN V5! Ella se recuesta bocarriba elevando ligeramente la cadera y él se aproxima para un juego de caricias orales mutuas antes del acto completo."},
+
+// 4. BLOQUE DE CUNNILINGUS (Específico del catálogo)
+{img:"cunnilingus_v1.png",text:"¡CUNNILINGUS V1! Ella se recuesta cómodamente bocarriba abriendo las piernas. Él se posiciona entre sus muslos para una estimulación con la lengua directa."},
+{img:"cunnilingus_v2.png",text:"¡CUNNILINGUS V2! Ella flexiona las rodillas elevando la pelvis sobre un cojín. Él aprovecha el cambio de altura para una penetración oral intensa."},
+{img:"cunnilingus_v3.png",text:"¡CUNNILINGUS V3! Ella se sienta al borde de la cama descansando su espalda, mientras él se arrodilla frente a ella enfocándose plenamente en su clítoris."},
+{img:"cunnilingus_v4.png",text:"¡CUNNILINGUS V4! Variante tumbada boca abajo: ella eleva sutilmente la cadera y él se desliza por debajo desde atrás para una estimulación sorpresa."},
+{img:"cunnilingus_v5.png",text:"¡CUNNILINGUS V5! Ambos de lado frente a frente, él levanta una pierna de ella sobre su cintura para acceder cómodamente a besar toda su zona íntima."},
+
+// 5. RESTO DE POSICIONES (Misionero, Loto, Perro, Tijeras, Perro de pie)
 {img:"misionero.png",text:"¡MISIONERO CLÁSICO! Ella se tumba bocarriba con las piernas abiertas. Él se coloca encima para mantener un contacto cara a cara y besos profundos."},
 {img:"misionero_v4.png",text:"¡MISIONERO VARIANTE 4! Ella flexiona las rodillas elevándolas directamente hacia su pecho, mientras él penetra desde arriba para cambiar por completo el ángulo interno."},
 {img:"misionero_v8.png",text:"¡MISIONERO V8! Ella estira una pierna sobre la cama mientras eleva la otra apoyándola firmemente sobre la cadera u hombro de él, permitiendo una entrada asimétrica muy profunda."},
@@ -65,7 +88,7 @@ const sexualCards=[
 {img:"loto_v6.png",text:"¡LOTO V6! Ambos se sientan frente a frente en la cama pero con las piernas abiertas e interconectadas de manera alterna, ideal para un ritmo pausado, miradas fijas y roces lentos."},
 {img:"loto_v7.png",text:"¡LOTO V7! Los dos cuerpos quedan completamente pegados en loto estrecho, mientras él aprovecha el balanceo para sostener y guiar suavemente las caderas de ella a cada ritmo."},
 {img:"perro_v1.png",text:"¡ESTILO PERRO V1! Ella se coloca boca abajo o apoyando los antebrazos planos contra el colchón, elevando la pelvis. Él realiza la penetración desde atrás de forma muy directa."},
-{img:"perro_v2.png",text:"¡ESTILO PERRO V2! Ella se coloca a cuatro patas, apoyando de forma estable rodillas y manos en la cama, mientras él toma el control total del ritmo de empuje desde atrás."},
+{img:"perro_v2.png",text:"¡ESTILO PERRO V2! Ella se coloca a cuatro patas, apoyando de forma estable rodillas and manos en la cama, mientras él toma el control total del ritmo de empuje desde atrás."},
 {img:"perro_v3.png",text:"¡ESTILO PERRO V3! Ella baja un poco más el pecho hacia el colchón arqueando sutilmente la espalda baja. Él se acopla firmemente sujetando con seguridad las caderas de ella."},
 {img:"perro_v4.png",text:"¡ESTILO PERRO V4! Ella junta por completo las rodillas y las piernas mientras está a cuatro patas, estrechando el canal. Él empuja desde atrás manteniendo una gran fricción."},
 {img:"perro_v5.png",text:"¡ESTILO PERRO V5! Ella se inclina hacia delante apoyando los brazos sobre el borde de la cama o un mueble alto, mientras él maneja la intensidad y el ritmo desde atrás con total comodidad."},
@@ -87,7 +110,7 @@ const sexualCards=[
 {img:"perrodepie_v7.png",text:"¡PERRO DE PIE V7! Con él de pie en el suelo, ella se coloca sobre una superficie sutilmente más alta (como el escalón de la cama) para lograr una alineación de caderas perfecta."},
 {img:"perrodepie_v8.png",text:"¡PERRO DE PIE V8! Ella se apoya hacia delante arqueando sutilmente el cuello hacia atrás para buscar el contacto con él, quien marca el ritmo vertical de pie con firmeza."},
 {img:"perrodepie_v9.png",text:"¡PERRO DE PIE V9! Ajuste final en vertical: ambos de pie y pegados espalda con pecho, buscando pequeños movimientos circulares altamente placenteros gracias a la fricción."},
-{img:"",text:"¡CONEXIÓN FINAL! Habéis recorrido todo el repertorio sincronizado. Elegid vuestra categoría favorita y disfrutad libremente a vuestro propio ritmo."}
+{img:"",text:"¡CONEXIÓN FINAL! Habéis recorrido todo el repertorio sincronizado de preliminares y coito. Elegid vuestra categoría favorita y disfrutad libremente sin mirar el móvil."}
 ];
 
 let usedNormalCards=[];
@@ -120,7 +143,8 @@ function getCard(){
     const v = players[currentTurn];
     const o = players[(currentTurn+1)%2];
     
-    document.getElementById('cardInstruction').innerHTML = climaxMode ? rawText : rawText.replace(/{V}/g,v).replace(/{O}/g,o);
+    // Tanto en normal como en clímax se parsean {V} y {O} dinámicamente
+    document.getElementById('cardInstruction').innerHTML = rawText.replace(/{V}/g,v).replace(/{O}/g,o);
     
     const imgDiv = document.getElementById('posImage');
     if(climaxMode && imgUrl){
@@ -132,9 +156,8 @@ function getCard(){
     
     const consQ = document.getElementById('cardConsequence');
     if(climaxMode){
-        consQ.innerHTML = `<strong>MODO CLÍMAX:</strong> Ambos estáis al descubierto. Mantened la posición y disfrutad del momento.`;
+        consQ.innerHTML = `<strong>MODO CLÍMAX PROGRESIVO:</strong> Preliminares y posturas en orden secuencial. Disfrutad y pasad de tarjeta cuando queráis avanzar de fase.`;
     }else{
-        // Lógica de penitencia que alterna dinámicamente entre Ropa y Bebida
         if(penitenceToggle === 0){
             consQ.innerHTML = `<strong>SI ${v.toUpperCase()} FALLA:</strong> ${o} elige y le quita **una prenda de ropa** a ${v}.`;
             penitenceToggle = 1;
