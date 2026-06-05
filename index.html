@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>La Guerra de los Sentidos</title><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><style>:root{--bg:#0b0612;--card-bg:#160f24;--accent:#ff2a5f;--accent-sub:#9d1df2;--text:#ffffff;--text-muted:#a59ba3;}body{margin:0;padding:20px;background:radial-gradient(circle at top, #1a0b2e, var(--bg));color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;box-sizing:border-box;}header{text-align:center;margin-bottom:15px;}h1{margin:0;font-size:1.8rem;background:linear-gradient(45deg,var(--accent),var(--accent-sub));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}header p{margin:5px 0 0 0;color:var(--text-muted);font-size:0.85rem;font-style:italic;}.container{width:100%;max-width:420px;display:flex;flex-direction:column;gap:15px;}h3{margin:0 0 10px 0;}.setup-section{background:var(--card-bg);padding:20px;border-radius:20px;border:1px solid #2d1b4e;box-shadow:0 10px 30px rgba(0,0,0,0.5);}.input-group{display:flex;flex-direction:column;gap:10px;margin-top:15px;}.input-field{padding:12px;border-radius:10px;border:1px solid #443266;background:#201435;color:white;font-size:1rem;box-sizing:border-box;width:100%;}.btn{padding:14px;border:none;border-radius:12px;font-size:1rem;font-weight:bold;cursor:pointer;background:var(--accent);color:#fff;box-shadow:0 4px 15px rgba(255,42,95,0.3);width:100%;box-sizing:border-box;margin-top:5px;}.btn-climax{background:linear-gradient(45deg, #cc0000, #660022);border:1px solid #ff0055;margin-top:10px;display:none;}#gameArea{display:none;flex-direction:column;gap:15px;width:100%;}.turn-indicator{text-align:center;font-size:1.1rem;font-weight:bold;color:#ffde59;margin-bottom:5px;}.game-card{width:100%;background:#201633;border:2px solid var(--accent);border-radius:20px;padding:25px;box-sizing:border-box;display:flex;flex-direction:column;box-shadow:0 8px 25px rgba(0,0,0,0.6);}.card-instruction{font-size:1.15rem;line-height:1.5;color:#e2d9f3;margin-bottom:15px;font-weight:500;}.pos-image{display:none;justify-content:center;align-items:center;margin:15px 0;background:#0d0818;padding:12px;border-radius:15px;border:1px solid rgba(255,42,95,0.4);}.pos-image img{width:100%;max-height:220px;object-fit:contain;border-radius:10px;}.card-consequence{background:rgba(255,42,95,0.1);border:1px dashed var(--accent);padding:12px;border-radius:8px;font-size:0.9rem;color:#ff7ea0;margin-top:10px;line-height:1.4;}</style></head><body><header><h1>La Guerra de los Sentidos</h1><p>Edición Sincronizada SPC (Shots, Prendas y Caos) 🍻🥴</p></header><div class="container"><div class="setup-section" id="setupSection"><h3>Configuración</h3><div class="input-group"><input type="text" id="p1" class="input-field" placeholder="Jugador/a 1"><input type="text" id="p2" class="input-field" placeholder="Jugador/a 2"><button class="btn" id="startBtn">Comenzar Juego</button></div></div><div id="gameArea"><div class="turn-indicator" id="turnIndicator">Turno de...</div><div class="game-card"><div class="card-instruction" id="cardInstruction">Esperando inicio...</div><div class="pos-image" id="posImage"></div><div class="card-consequence" id="cardConsequence">Penitencia...</div></div><button class="btn" id="nextCardBtn">Siguiente Tarjeta</button><button class="btn btn-climax" id="climaxBtn">Cuando alguien se quede desnudo pulsar aquí</button></div></div><script>let players=[];let currentTurn=0;let cardCount=1;let climaxMode=false;let climaxIndex=0;let penitenceToggle=0;
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>La Guerra de los Sentidos</title><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><style>:root{--bg:#0b0612;--card-bg:#160f24;--accent:#ff2a5f;--accent-sub:#9d1df2;--text:#ffffff;--text-muted:#a59ba3;}body{margin:0;padding:20px;background:radial-gradient(circle at top, #1a0b2e, var(--bg));color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;box-sizing:border-box;}header{text-align:center;margin-bottom:15px;}h1{margin:0;font-size:1.8rem;background:linear-gradient(45deg,var(--accent),var(--accent-sub));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}header p{margin:5px 0 0 0;color:var(--text-muted);font-size:0.85rem;font-style:italic;}.container{width:100%;max-width:420px;display:flex;flex-direction:column;gap:15px;}h3{margin:0 0 10px 0;}.setup-section{background:var(--card-bg);padding:20px;border-radius:20px;border:1px solid #2d1b4e;box-shadow:0 10px 30px rgba(0,0,0,0.5);}.input-group{display:flex;flex-direction:column;gap:10px;margin-top:15px;}.input-field{padding:12px;border-radius:10px;border:1px solid #443266;background:#201435;color:white;font-size:1rem;box-sizing:border-box;width:100%;}.mode-selection{margin:10px 0;background:rgba(255,255,255,0.05);padding:12px;border-radius:10px;border:1px solid #3a275a;}.mode-option{display:flex;align-items:center;gap:10px;margin:8px 0;cursor:pointer;font-size:0.95rem;}.mode-option input{accent-color:var(--accent);width:18px;height:18px;cursor:pointer;}.btn{padding:14px;border:none;border-radius:12px;font-size:1rem;font-weight:bold;cursor:pointer;background:var(--accent);color:#fff;box-shadow:0 4px 15px rgba(255,42,95,0.3);width:100%;box-sizing:border-box;margin-top:5px;}.btn-climax{background:linear-gradient(45deg, #cc0000, #660022);border:1px solid #ff0055;margin-top:10px;display:none;}#gameArea{display:none;flex-direction:column;gap:15px;width:100%;}.turn-indicator{text-align:center;font-size:1.1rem;font-weight:bold;color:#ffde59;margin-bottom:5px;}.game-card{width:100%;background:#201633;border:2px solid var(--accent);border-radius:20px;padding:25px;box-sizing:border-box;display:flex;flex-direction:column;box-shadow:0 8px 25px rgba(0,0,0,0.6);}.card-instruction{font-size:1.15rem;line-height:1.5;color:#e2d9f3;margin-bottom:15px;font-weight:500;}.pos-image{display:none;justify-content:center;align-items:center;margin:15px 0;background:#0d0818;padding:12px;border-radius:15px;border:1px solid rgba(255,42,95,0.4);}.pos-image img{width:100%;max-height:220px;object-fit:contain;border-radius:10px;}.card-consequence{background:rgba(255,42,95,0.1);border:1px dashed var(--accent);padding:12px;border-radius:8px;font-size:0.9rem;color:#ff7ea0;margin-top:10px;line-height:1.4;}</style></head><body><header><h1>La Guerra de los Sentidos</h1><p>Edición Sincronizada SPC (Shots, Prendas y Caos) 🍻🥴</p></header><div class="container"><div class="setup-section" id="setupSection"><h3>Configuración</h3><div class="input-group"><input type="text" id="p1" class="input-field" placeholder="Jugador/a 1"><input type="text" id="p2" class="input-field" placeholder="Jugador/a 2"><div class="mode-selection"><strong>Selecciona el tipo de juego:</strong><label class="mode-option"><input type="radio" name="gameMode" value="normal" checked> Versión Normal (Sensorial y Retos)</label><label class="mode-option"><input type="radio" name="gameMode" value="picante"> Versión Preguntas Picantes (+Atrevida)</label></div><button class="btn" id="startBtn">Comenzar Juego</button></div></div><div id="gameArea"><div class="turn-indicator" id="turnIndicator">Turno de...</div><div class="game-card"><div class="card-instruction" id="cardInstruction">Esperando inicio...</div><div class="pos-image" id="posImage"></div><div class="card-consequence" id="cardConsequence">Penitencia...</div></div><button class="btn" id="nextCardBtn">Siguiente Tarjeta</button><button class="btn btn-climax" id="climaxBtn">Cuando alguien se quede desnudo pulsar aquí</button></div></div><script>let players=[];let currentTurn=0;let cardCount=1;let climaxMode=false;let climaxIndex=0;let penitenceToggle=0;let selectedVersion="normal";
 
 const normalCards=[
 "{O} debe vendarle los ojos a {V}. {O} preparará un sorbo de alguna bebida disponible. {V} debe adivinar qué bebida es solo por el gusto y el olor.",
@@ -19,13 +19,13 @@ const normalCards=[
 "{O} va a escribir un mensaje secreto en un trozo de papel o en su móvil y se lo mostrará a {V}. {V} debe leerlo en voz alta con tono seductor.",
 "{V} tiene que darle a {O} tres razones sinceras por las cuales le resulta irresistible físicamente.",
 "{O} tiene el poder de elegir qué prenda debe quitarse {V} ahora mismo, sin necesidad de que {V} falle ninguna pregunta.",
-"{V} le venda los ojos a {O} y le toca con algo y {O} tiene que adivinar que es",
+"{V} debe morder sutilmente el lóbulo de la oreja de {O} y luego susurrarle qué es lo primero que pensó cuando se conocieron.",
 "{O} usará un mechón de su propio pelo o una prenda suave para hacerle cosquillas a {V} en el cuello o los pies durante 20 segundos. {V} no puede moverse.",
 "{V} tiene que hacerle un cumplido atrevido a {O} utilizando únicamente palabras que empiecen por la letra 'P'. Tiene 10 segundos para pensar.",
 "{O} se colocará detrás de {V} y le dará un abrazo muy apretado durante 45 segundos. Ninguno de los dos puede hablar durante este tiempo.",
 "{V} debe imitar de forma exagerada y divertida un hábito o gesto cotidiano de {O}. Si {O} se ríe, {V} se salva del castigo.",
 "{O} seleccionará un vídeo corto o una foto divertida de su galería y {V} tendrá que recrear la pose exacta que aparezca en la pantalla.",
-"{V} tiene que confessar cuál es la parte del cuerpo de {O} que más le gusta mirar en secreto cuando no se da cuenta.",
+"{V} tiene que confesar cuál es la parte del cuerpo de {O} que más le gusta mirar en secreto cuando no se da cuenta.",
 "{O} va a poner una canción. {V} debe bailar de manera sensual frente a {O} durante los primeros 30 segundos del tema.",
 "{V} debe permitir que {O} le haga cosquillas en las costillas o los pies durante 15 segundos sin intentar apartar las manos de {O}.",
 "{O} elegirá un objeto aleatorio. {V} tiene que intentar vendarse los ojos y dibujar ese objeto en un papel. {O} debe adivinar qué es.",
@@ -43,12 +43,23 @@ const normalCards=[
 "{O} va a tomar el control del pelo de {V} y tendrá que hacerle un peinado original o divertido en menos de un minuto.",
 "{V} tiene que darle un masaje relajante de hombros a {O} utilizando únicamente sus antebrazos o codos de forma suave.",
 "{O} le dictará un trabalenguas rápido a {V}. Si {V} se traba o lo dice mal, sufrirá la penitencia de la prenda.",
-"👁️ [VISTA] - {V} debe cerrar los ojos. {O} cambiará un solo detalle de su postura o expression facial. {V} abre los ojos y tiene 15 segundos para adivinar qué ha cambiado.",
+"👁️ [VISTA] - {V} debe cerrar los ojos. {O} cambiará un solo detalle de su postura o expresión facial. {V} abre los ojos y tiene 15 segundos para adivinar qué ha cambiado.",
 "🖐️ [TACTO] - {O} debe delinear lentamente con la yema del dedo el contorno de los labios de {V} durante 20 segundos. Ninguno de los dos puede reírse.",
-"👂 [OOIDO] - {O} debe acercarse a la oreja de {V} y realizar tres respiraciones profundas y pausadas alternando la temperatura del aire. {V} debe mantener los ojos cerrados.",
+"👂 [OOIDO] - {O} debe acercarse a la oreja de {V} y realizar tres respiraciones profundas y pausadas alternando la temperatura del aire. {V} debe mantener los ojos closures.",
 "👅 [GUSTO] - Sincronización aromática: Ambos debéis acercar vuestros vasos e inhalar el aroma de la bebida del otro al mismo tiempo, con los ojos fijos en la mirada del contrario durante 15 segundos.",
 "👁️ [VISTA] - {V} debe mirar fijamente el cuello y clavícula de {O} durante 20 segundos sin desviar la mirada bajo ninguna circunstancia, mientras {O} le sonríe de forma pícara.",
 "🖐️ [TACTO] - Juego de temperaturas: {O} frotará sus manos para calentarlas y luego tocará las mejillas de {V} durante 15 segundos evaluando la reacción en su piel."
+];
+
+// ======================================================================
+// PEGA AQUÍ TUS 280 PREGUNTAS PICANTES
+// Asegúrate de usar {V} para la víctima y {O} para el que manda/observa
+// ======================================================================
+const tusPreguntasPicantes=[
+"Pregunta picante de ejemplo 1: {V}, confiesa un lugar público en el que te gustaría hacerlo con {O}. Si no respondes, te quitas una prenda.",
+"Pregunta picante de ejemplo 2: {O} le pregunta a {V}: ¿Qué prenda de ropa interior de las que tengo es tu favorita y por qué?",
+"Pregunta picante de ejemplo 3: {V}, describe utilizando solo tres adjetivos muy ardientes cómo definirías la última vez que lo hicisteis.",
+"Pregunta picante de ejemplo 4: {V} debe confesar cuál es la postura del catálogo que tiene más ganas de recrear esta noche con {O}."
 ];
 
 const sexualCards=[
@@ -114,8 +125,9 @@ const sexualCards=[
 ];
 
 let usedNormalCards=[];
+let usedPicanteCards=[];
 let playerVCounts = {};
-const tarjetaEspecialTurno4 = "¡RETO ESPECIAL ACUMULATIVO! {V} ha alcanzado su cuarto turno bajo control. Como castigo directo, {V} di si alguna vez has tenido un sueño erótico sexual con {O}, en caso de que la respuesta sea si, {O} puede pedir detalles solo si responde la misma pregunta";
+const tarjetaEspecialTurno4 = "¡RETO ESPECIAL ACUMULATIVO! {V} ha alcanzado su cuarto turno bajo control. Como castigo directo, {V} di si alguna vez has tenido un sueño erótico sexual con {O}, en caso de que la respuesta sea si, {O} puede pedir detalles solo si responde la misma pregunta.";
 
 function getCard(){
     let rawText="";
@@ -140,16 +152,30 @@ function getCard(){
     }else if (!climaxMode && playerVCounts[v] === 4 && v === players[0]) {
         rawText = tarjetaEspecialTurno4;
     }else{
-        if(usedNormalCards.length === normalCards.length){
-            usedNormalCards = [];
+        // Elección de baraja según versión seleccionada al inicio
+        if(selectedVersion === "picante"){
+            if(usedPicanteCards.length === tusPreguntasPicantes.length){
+                usedPicanteCards = [];
+            }
+            let randomIndex;
+            do{
+                randomIndex = Math.floor(Math.random()*tusPreguntasPicantes.length);
+            }while(usedPicanteCards.includes(randomIndex));
+            
+            usedPicanteCards.push(randomIndex);
+            rawText = tusPreguntasPicantes[randomIndex];
+        }else{
+            if(usedNormalCards.length === normalCards.length){
+                usedNormalCards = [];
+            }
+            let randomIndex;
+            do{
+                randomIndex = Math.floor(Math.random()*normalCards.length);
+            }while(usedNormalCards.includes(randomIndex));
+            
+            usedNormalCards.push(randomIndex);
+            rawText = normalCards[randomIndex];
         }
-        let randomIndex;
-        do{
-            randomIndex = Math.floor(Math.random()*normalCards.length);
-        }while(usedNormalCards.includes(randomIndex));
-        
-        usedNormalCards.push(randomIndex);
-        rawText = normalCards[randomIndex];
     }
     
     document.getElementById('cardInstruction').innerHTML = rawText.replace(/{V}/g,v).replace(/{O}/g,o);
@@ -182,6 +208,8 @@ document.getElementById('startBtn').addEventListener('click',()=>{
     const p2 = document.getElementById('p2').value.trim();
     if(p1 && p2){
         players = [p1,p2];
+        // Guardamos la versión que se haya marcado en la configuración inicial
+        selectedVersion = document.querySelector('input[name="gameMode"]:checked').value;
         document.getElementById('setupSection').style.display = 'none';
         document.getElementById('gameArea').style.display = 'flex';
         getCard();
