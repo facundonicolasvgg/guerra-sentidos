@@ -17,9 +17,9 @@ const normalCards=[
 "{O} elegirá una prenda de su propio armario o de la habitación y obligará a {V} a ponérsela encima de la ropa que ya lleva durante los próximos 3 turnos.",
 "{V} debe desbloquear su móvil y dejar que {O} lea el último chat de WhatsApp abierto durante 15 segundos enteros.",
 "{O} va a escribir un mensaje secreto en un trozo de papel o en su móvil y se lo mostrará a {V}. {V} debe leerlo en voz alta con tono seductor.",
-"{V} tiene que darle a {O} tres razones sinceras por las cuales le resulta irresistible físicamente.",
+"{V} tiene que decir tres cosas que le resultan irresistibles físicamente en una persona.",
 "{O} tiene el poder de elegir qué prenda debe quitarse {V} ahora mismo, sin necesidad de que {V} falle ninguna pregunta.",
-"{V} debe morder sutilmente el lóbulo de la oreja de {O} y luego susurrarle qué es lo primero que pensó cuando se conocieron.",
+"{V} Qué es lo primero que pensó cuando se conociste a {O}.",
 "{O} usará un mechón de su propio pelo o una prenda suave para hacerle cosquillas a {V} en el cuello o los pies durante 20 segundos. {V} no puede moverse.",
 "{V} tiene que hacerle un cumplido atrevido a {O} utilizando únicamente palabras que empiecen por la letra 'P'. Tiene 10 segundos para pensar.",
 "{O} se colocará detrás de {V} y le dará un abrazo muy apretado durante 45 segundos. Ninguno de los dos puede hablar durante este tiempo.",
@@ -43,7 +43,7 @@ const normalCards=[
 "{O} va a tomar el control del pelo de {V} y tendrá que hacerle un peinado original o divertido en menos de un minuto.",
 "{V} tiene que darle un masaje relajante de hombros a {O} utilizando únicamente sus antebrazos o codos de forma suave.",
 "{O} le dictará un trabalenguas rápido a {V}. Si {V} se traba o lo dice mal, sufrirá la penitencia de la prenda.",
-"👁️ [VISTA] - {V} debe cerrar los ojos. {O} cambiará un solo detalle de su postura o expresión facial. {V} abre los ojos y tiene 15 segundos para adivinar qué ha cambiado.",
+"👁️ [VISTA] - {V} debe cerrar los ojos. {O} cambiará un solo detalle de su postura o expression facial. {V} abre los ojos y tiene 15 segundos para adivinar qué ha cambiado.",
 "🖐️ [TACTO] - {O} debe delinear lentamente con la yema del dedo el contorno de los labios de {V} durante 20 segundos. Ninguno de los dos puede reírse.",
 "👂 [OOIDO] - {O} debe acercarse a la oreja de {V} y realizar tres respiraciones profundas y pausadas alternando la temperatura del aire. {V} debe mantener los ojos closures.",
 "👅 [GUSTO] - Sincronización aromática: Ambos debéis acercar vuestros vasos e inhalar el aroma de la bebida del otro al mismo tiempo, con los ojos fijos en la mirada del contrario durante 15 segundos.",
@@ -301,7 +301,7 @@ const tusPreguntasPicantes=[
 "{V}, ¿cuál ha sido la cosa más ridícula, absurda o insignificante que te ha provocado un ataque de celos posesivo?",
 "{V}, ¿cuánto tiempo y esfuerzo te cuesta por lo general llegar al orgasmo? ¿Es fácil o difícil?",
 "{V}, ¿alguna vez te has ido al trabajo, estudios o una cena importante y en mitad del camino te has dado cuenta de que olvidaste ponerte ropa interior?",
-"{V}, ¿cuál ha sido la fantasía sexual más bestia, explícita y sucia que has tenido despierto/a en tu lugar de trabajo o estudio?",
+"{V}, ¿cuál ha sido la fantasía sexual más bestia, explíquita y sucia que has tenido despierto/a en tu lugar de trabajo o estudio?",
 "{V}, ¿eres capaz de desnudarte por completo e imprevisto en menos de 5 segundos si {O} te lo ordena ahora mismo?",
 "¿Quién de los dos consideras que es la persona más sexy, provocativa y con más ritmo a la hora de bailar pegado, {V}?",
 "{V}, confiesa la verdad: ¿has cotilleado el móvil, fotos o chats de tu pareja sin su total permiso?",
@@ -374,7 +374,7 @@ const sexualCards=[
 let usedNormalCards=[];
 let usedPicanteCards=[];
 let playerVCounts = {};
-const tarjetaEspecialTurno4 = "¡RETO ESPECIAL ACUMULATIVO! {V} ha alcanzado su cuarto turno bajo control. Como castigo directo, {O} tiene derecho a elegir una zona del cuerpo de {V} para morder suavemente y mantener un contacto físico ininterrumpido durante los próximos 30 segundos.";
+const tarjetaEspecialTurno4 = "¡RETO ESPECIAL ACUMULATIVO! {V} ha alcanzado su cuarto turno bajo control. Como castigo directo, {V} di si alguna vez has tenido un sueño erótico sexual con {O}, en caso de que la respuesta sea si, {O} puede pedir detalles solo si responde la misma pregunta.";
 
 function getCard(){
     let rawText="";
@@ -438,19 +438,24 @@ function getCard(){
     if(climaxMode){
         consQ.innerHTML = `<strong>Disfrutad de la noche</strong>`;
     }else{
-        // NUEVA LÓGICA DE ROTACIÓN DE 4 ESTADOS: ROPA REDUCIDA
-        if(penitenceToggle === 0){
-            consQ.innerHTML = `<strong>EL PRECIO DE LA VERDAD (Fase Alcohol):</strong><br>• Si <strong>${v.toUpperCase()}</strong> responde: Toma 1 trago corto 🍻.<br>• Si se niega: Bebe 3 tragos de golpe.`;
-            penitenceToggle = 1;
-        }else if(penitenceToggle === 1){
-            consQ.innerHTML = `<strong>EL PRECIO DE LA VERDAD (Fase Prenda):</strong><br>• Si <strong>${v.toUpperCase()}</strong> responde: ¡Te salvas! No pasa nada.<br>• Si se niega: <strong>${o}</strong> elige y te quita 1 prenda 👙.`;
-            penitenceToggle = 2;
-        }else if(penitenceToggle === 2){
-            consQ.innerHTML = `<strong>EL PRECIO DE LA VERDAD (Fase Confesión):</strong><br>• Si <strong>${v.toUpperCase()}</strong> responde: ¡Brindis! Ambos tomáis 1 trago.<br>• Si se niega: <strong>${v.toUpperCase()}</strong> se toma 3 tragos largos.`;
-            penitenceToggle = 3;
-        }else{
-            consQ.innerHTML = `<strong>EL PRECIO DE LA VERDAD (Fase Apuesta Máxima):</strong><br>• Si <strong>${v.toUpperCase()}</strong> responde: <strong>${o}</strong> te quita 1 prenda.<br>• Si se niega: ¡Te quitas 2 prendas tú mismo/a!`;
-            penitenceToggle = 0;
+        if(selectedVersion === "normal"){
+            // VERSIÓN ORIGINAL PARA TARJETAS NORMALES:
+            consQ.innerHTML = `<strong>EL PRECIO DE FALLAR EL RETO:</strong><br>• Si no logras cumplir el reto sensorial o responder bien, te quitas 1 prenda 👙 o tomas 2 tragos largos 🍻 (A elección del rival).`;
+        } else {
+            // VERSIÓN PICANTE CONTROLADA CON ROTACIÓN DE 4 ESTADOS:
+            if(penitenceToggle === 0){
+                consQ.innerHTML = `<strong>EL PRECIO DE LA VERDAD (Fase Alcohol):</strong><br>• Si <strong>${v.toUpperCase()}</strong> responde: Toma 1 trago corto 🍻.<br>• Si se niega: Bebe 3 tragos de golpe.`;
+                penitenceToggle = 1;
+            }else if(penitenceToggle === 1){
+                consQ.innerHTML = `<strong>EL PRECIO DE LA VERDAD (Fase Prenda):</strong><br>• Si <strong>${v.toUpperCase()}</strong> responde: ¡Te salvas! No pasa nada.<br>• Si se niega: <strong>${o}</strong> elige y te quita 1 prenda 👙.`;
+                penitenceToggle = 2;
+            }else if(penitenceToggle === 2){
+                consQ.innerHTML = `<strong>EL PRECIO DE LA VERDAD (Fase Confesión):</strong><br>• Si <strong>${v.toUpperCase()}</strong> responde: ¡Brindis! Ambos tomáis 1 trago.<br>• Si se niega: <strong>${v.toUpperCase()}</strong> se toma 3 tragos largos.`;
+                penitenceToggle = 3;
+            }else{
+                consQ.innerHTML = `<strong>EL PRECIO DE LA VERDAD (Fase Apuesta Máxima):</strong><br>• Si <strong>${v.toUpperCase()}</strong> responde: <strong>${o}</strong> te quita 1 prenda.<br>• Si se niega: ¡Te quitas 2 prendas tú mismo/a!`;
+                penitenceToggle = 0;
+            }
         }
     }
     document.getElementById('turnIndicator').textContent = `Turno de: ${v}`;
