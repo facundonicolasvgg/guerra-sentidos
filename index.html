@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>La Guerra de los Sentidos</title><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><style>:root{--bg:#0b0612;--card-bg:#160f24;--accent:#ff2a5f;--accent-sub:#9d1df2;--text:#ffffff;--text-muted:#a59ba3;}body{margin:0;padding:20px;background:radial-gradient(circle at top, #1a0b2e, var(--bg));color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;box-sizing:border-box;}header{text-align:center;margin-bottom:15px;}h1{margin:0;font-size:1.8rem;background:linear-gradient(45deg,var(--accent),var(--accent-sub));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}header p{margin:5px 0 0 0;color:var(--text-muted);font-size:0.85rem;font-style:italic;}.container{width:100%;max-width:420px;display:flex;flex-direction:column;gap:15px;}h3{margin:0 0 10px 0;}.setup-section{background:var(--card-bg);padding:20px;border-radius:20px;border:1px solid #2d1b4e;box-shadow:0 10px 30px rgba(0,0,0,0.5);}.input-group{display:flex;flex-direction:column;gap:10px;margin-top:15px;}.input-field{padding:12px;border-radius:10px;border:1px solid #443266;background:#201435;color:white;font-size:1rem;box-sizing:border-box;width:100%;}.mode-selection{margin:10px 0;background:rgba(255,255,255,0.05);padding:12px;border-radius:10px;border:1px solid #3a275a;}.mode-option{display:flex;align-items:center;gap:10px;margin:8px 0;cursor:pointer;font-size:0.95rem;}.mode-option input{accent-color:var(--accent);width:18px;height:18px;cursor:pointer;}.btn{padding:14px;border:none;border-radius:12px;font-size:1rem;font-weight:bold;cursor:pointer;background:var(--accent);color:#fff;box-shadow:0 4px 15px rgba(255,42,95,0.3);width:100%;box-sizing:border-box;margin-top:5px;}.btn-climax{background:linear-gradient(45deg, #cc0000, #660022);border:1px solid #ff0055;margin-top:10px;display:none;}#gameArea{display:none;flex-direction:column;gap:15px;width:100%;}.turn-indicator{text-align:center;font-size:1.1rem;font-weight:bold;color:#ffde59;margin-bottom:5px;}.game-card{width:100%;background:#201633;border:2px solid var(--accent);border-radius:20px;padding:25px;box-sizing:border-box;display:flex;flex-direction:column;box-shadow:0 8px 25px rgba(0,0,0,0.6);}.card-instruction{font-size:1.15rem;line-height:1.5;color:#e2d9f3;margin-bottom:15px;font-weight:500;}.pos-image{display:none;justify-content:center;align-items:center;margin:15px 0;background:#0d0818;padding:12px;border-radius:15px;border:1px solid rgba(255,42,95,0.4);}.pos-image img{width:100%;max-height:220px;object-fit:contain;border-radius:10px;}.card-consequence{background:rgba(255,42,95,0.1);border:1px dashed var(--accent);padding:12px;border-radius:8px;font-size:0.9rem;color:#ff7ea0;margin-top:10px;line-height:1.4;}</style></head><body><header><h1>La Guerra de los Sentidos</h1><p>Edición Sincronizada SPC (Shots, Prendas y Caos) 🍻🥴</p></header><div class="container"><div class="setup-section" id="setupSection"><h3>Configuración</h3><div class="input-group"><input type="text" id="p1" class="input-field" placeholder="Jugador/a 1"><input type="text" id="p2" class="input-field" placeholder="Jugador/a 2"><div class="mode-selection"><strong>Selecciona el tipo de juego:</strong><label class="mode-option"><input type="radio" name="gameMode" value="normal" checked> Versión Normal (Sensorial y Retos)</label><label class="mode-option"><input type="radio" name="gameMode" value="picante"> Versión Preguntas Picantes (+Atrevida)</label></div><button class="btn" id="startBtn">Comenzar Juego</button></div></div><div id="gameArea"><div class="turn-indicator" id="turnIndicator">Turno de...</div><div class="game-card"><div class="card-instruction" id="cardInstruction">Esperando inicio...</div><div class="pos-image" id="posImage"></div><div class="card-consequence" id="cardConsequence">Penitencia...</div></div><button class="btn" id="nextCardBtn">Siguiente Tarjeta</button><button class="btn btn-climax" id="climaxBtn">Cuando alguien se quede desnudo pulsar aquí</button></div></div><script>let players=[];let currentTurn=0;let cardCount=1;let climaxMode=false;let climaxIndex=0;let penitenceToggle=0;let selectedVersion="normal";
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>La Guerra de los Sentidos</title><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><style>:root{--bg:#0b0612;--card-bg:#160f24;--accent:#ff2a5f;--accent-sub:#9d1df2;--text:#ffffff;--text-muted:#a59ba3;}body{margin:0;padding:20px;background:radial-gradient(circle at top, #1a0b2e, var(--bg));color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;box-sizing:border-box;}header{text-align:center;margin-bottom:15px;}h1{margin:0;font-size:1.8rem;background:linear-gradient(45deg,var(--accent),var(--accent-sub));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}header p{margin:5px 0 0 0;color:var(--text-muted);font-size:0.85rem;font-style:italic;}.container{width:100%;max-width:420px;display:flex;flex-direction:column;gap:15px;}h3{margin:0 0 10px 0;}.setup-section{background:var(--card-bg);padding:20px;border-radius:20px;border:1px solid #2d1b4e;box-shadow:0 10px 30px rgba(0,0,0,0.5);}.input-group{display:flex;flex-direction:column;gap:10px;margin-top:15px;}.input-field{padding:12px;border-radius:10px;border:1px solid #443266;background:#201435;color:white;font-size:1rem;box-sizing:border-box;width:100%;}.mode-selection{margin:10px 0;background:rgba(255,255,255,0.05);padding:12px;border-radius:10px;border:1px solid #3a275a;}.mode-option{display:flex;align-items:center;gap:10px;margin:8px 0;cursor:pointer;font-size:0.95rem;}.mode-option input{accent-color:var(--accent);width:18px;height:18px;cursor:pointer;}.btn{padding:14px;border:none;border-radius:12px;font-size:1rem;font-weight:bold;cursor:pointer;background:var(--accent);color:#fff;box-shadow:0 4px 15px rgba(255,42,95,0.3);width:100%;box-sizing:border-box;margin-top:5px;}.btn-climax{background:linear-gradient(45deg, #cc0000, #660022);border:1px solid #ff0055;margin-top:10px;display:none;}#gameArea{display:none;flex-direction:column;gap:15px;width:100%;}.turn-indicator{text-align:center;font-size:1.1rem;font-weight:bold;color:#ffde59;margin-bottom:5px;}.game-card{width:100%;background:#201633;border:2px solid var(--accent);border-radius:20px;padding:25px;box-sizing:border-box;display:flex;flex-direction:column;box-shadow:0 8px 25px rgba(0,0,0,0.6);}.card-instruction{font-size:1.15rem;line-height:1.5;color:#e2d9f3;margin-bottom:15px;font-weight:500;}.pos-image{display:none;justify-content:center;align-items:center;margin:15px 0;background:#0d0818;padding:12px;border-radius:15px;border:1px solid rgba(255,42,95,0.4);}.pos-image img{width:100%;max-height:220px;object-fit:contain;border-radius:10px;}.card-consequence{background:rgba(255,42,95,0.1);border:1px dashed var(--accent);padding:12px;border-radius:8px;font-size:0.9rem;color:#ff7ea0;margin-top:10px;line-height:1.4;}</style></head><body><header><h1>La Guerra de los Sentidos</h1><p>Edición Sincronizada SPC (Shots, Prendas y Caos) 🍻🥴</p></header><div class="container"><div class="setup-section" id="setupSection"><h3>Configuración</h3><div class="input-group"><input type="text" id="p1" class="input-field" placeholder="Jugador/a 1"><input type="text" id="p2" class="input-field" placeholder="Jugador/a 2"><div class="mode-selection"><strong>Selecciona el tipo de juego:</strong><label class="mode-option"><input type="radio" name="gameMode" value="normal" checked> Versión Normal (Sensorial y Retos)</label><label class="mode-option"><input type="radio" name="gameMode" value="picante"> Versión Preguntas Picantes (+Atrevida)</label><label class="mode-option"><input type="radio" name="gameMode" value="hardcore"> Modo Hardcore (Tensión y Explícito) 🔞</label></div><button class="btn" id="startBtn">Comenzar Juego</button></div></div><div id="gameArea"><div class="turn-indicator" id="turnIndicator">Turno de...</div><div class="game-card"><div class="card-instruction" id="cardInstruction">Esperando inicio...</div><div class="pos-image" id="posImage"></div><div class="card-consequence" id="cardConsequence">Penitencia...</div></div><button class="btn" id="nextCardBtn">Siguiente Tarjeta</button><button class="btn btn-climax" id="climaxBtn">Cuando alguien se quede desnudo pulsar aquí</button></div></div><script>let players=[];let currentTurn=0;let cardCount=1;let climaxMode=false;let climaxIndex=0;let penitenceToggle=0;let selectedVersion="normal";
 
 const normalCards=[
 "{O} debe vendarle los ojos a {V}. {O} preparará un sorbo de alguna bebida disponible. {V} debe adivinar qué bebida es solo por el gusto y el olor.",
@@ -53,10 +53,10 @@ const normalCards=[
 
 const tusPreguntasPicantes=[
 "{V}, ¿has comprado alguna vez en un sex shop?",
-"{V}, ¿alguna vez has coqueteado con alguien mucho mayor que tú?",
+"{V}, ¿alguna vez te has coqueteado con alguien mucho mayor que tú?",
 "{V}, ¿y con alguien mucho más joven?",
 "{V}, ¿alguna vez te has acostado con un desconocido?",
-"{V}, ¿alguna vez has tenido una cita a ciegas?",
+"{V}, ¿alguna vez te has tenido una cita a ciegas?",
 "{V}, ¿qué prefieres en una pareja, una cara bonita o un cuerpo sexy?",
 "{V}, ¿alguna vez has tenido sexo en el coche?",
 "{V}, ¿alguna vez has tenido relaciones por dinero o favores?",
@@ -67,7 +67,7 @@ const tusPreguntasPicantes=[
 "{V}, ¿alguna vez te has equivocado de nombre en pleno acto o en una relación?",
 "{V}, ¿has tenido sueños eróticos con personas con las que no deberías?",
 "{V}, ¿cuántas veces puedes tener sexo en una sola noche?",
-"{V}, ¿alguna vez has fingido un orgasmo?",
+"{V}, ¿alguna vez han fingido un orgasmo?",
 "{V}, ¿recuerdas y puedes describir el mejor orgasmo que hayan tenido?",
 "{V}, ¿alguna vez has tenido un orgasmo en sueños?",
 "{V}, ¿cuántos orgasmos has llegado a tener en una sola noche?",
@@ -135,7 +135,7 @@ const tusPreguntasPicantes=[
 "¿A qué edad perdiste la virginidad exactamente, {V}?",
 "{V}, ¿con quién perdiste la virginidad?",
 "{V}, si pudieras volver atrás, ¿cambiarías algo de tu primera vez?",
-"{V}, ¿te arrepientes hoy en día de la persona con la que perdiste la virginidad?",
+"{V}, ¿te arrepientes today en día de la persona con la que perdiste la virginidad?",
 "{V}, ¿duermes desnudo/a normalmente?",
 "{V}, ¿estás 100% satisfecho/a con tu vida sexual actual?",
 "{V}, ¿qué objeto o artículo te daría más vergüenza comprar en una tienda erótica presencial?",
@@ -233,7 +233,7 @@ const tusPreguntasPicantes=[
 "{V}, ¿te gusta tener rollos y aventuras de una sola noche o prefieres la estabilidad?",
 "{V}, ¿a qué persona conocida o pública no te gustaría ver desnuda bajo ninguna circunstancia?",
 "{V}, ¿cuál es tu categoría o tipo de porno favorito cuando buscas contenido?",
-"{V}, ¿tienes algún vídeo, escena o actriz/actor porno en concreto que sea tu favorito recurrente?",
+"{V}, ¿tienes algún vídeo, escena o actriz/actor porno en concreto que sea tu favorito recurrentemente?",
 "{V}, ¿crees de verdad que el tamaño del miembro importa a la hora del placer mutuo?",
 "{V}, ¿te atrae la lencería erótica, los encajes y los conjuntos sugerentes?",
 "{V}, ¿preferirías tener un orgasmo incontrolable en un lugar público o no volver a tener uno en seis meses?",
@@ -245,7 +245,7 @@ const tusPreguntasPicantes=[
 "{V}, sé totalmente sincero/a: ¿crees que eres bueno/a en la cama o tienes cosas que mejorar?",
 "{V}, ¿te gusta que te agarren o te tiren del pelo con cierta fuerza mientras lo hacéis?",
 "¿De qué parte exacta de tu anatomía o cuerpo te sientes más orgulloso/a y sexy, {V}?",
-"{V}, ¿cuál ha sido el récord de veces que has tenido sexo o te has masturbado en un período de 24 horas?",
+"{V}, ¿cuál ha sido el récord de veces que has tenido sexo o te has masturbatdo en un período de 24 horas?",
 "{V}, ¿qué es lo que más te gusta y disfrutas de tu vida sexual actual con {O}?",
 "{V}, si este juego se detuviera ahora mismo y estuviéramos solos, ¿qué es lo primero que le harías a {O}?",
 "{V}, ¿alguna vez te has hecho daño o has tenido un percance doloroso usando un juguete sexual?",
@@ -280,7 +280,7 @@ const tusPreguntasPicantes=[
 "{V}, ¿cómo aprendiste realmente a colocar un preservativo en tu juventud?",
 "{V}, ¿te parecería un buen plan sentarte a ver porno explícito junto a {O} para sacar ideas?",
 "{V}, ¿te gustaría recrear de principio a fin alguna escena porno específica con {O}?",
-"{V}, ¿alguna vez has engañado de forma física o virtual a alguna de tus parejas?",
+"{V}, ¿alguna vez han engañado de forma física o virtual a alguna de tus parejas?",
 "{V}, ¿alguna vez te has planteado o bromeado con la idea de ser actor/actriz porno?",
 "{V}, ¿y te has planteado seriamente abrirte una cuenta de OnlyFans para ganar dinero con tus fotos?",
 "{V}, ¿te has acostado con más de una persona diferente en un mismo período de 24 horas?",
@@ -371,8 +371,89 @@ const sexualCards=[
 {img:"",text:"¡CONEXIÓN FINAL! Habéis recorrido todo el repertorio sincronizado de preliminares y coito. Elegid vuestra categoría favorita y disfrutad libremente sin mirar el móvil."}
 ];
 
+const hardcoreCards=[
+"Verdad: {V}, ¿qué fue lo primero que te llamó la atención de {O} cuando lo conociste, fuera o no de naturaleza sexual?",
+"Reto: {O} le da un trago a {V}. Si {V} acepta beberlo, {O} debe quitarse una prenda (calcetín, zapato, etc.).",
+"Verdad: {O}, ¿alguna vez te has encontrado pensando en {V} fuera de vuestra amistad normal?",
+"Reto: {V} le da un trago a {O}. {V} debe quitarse una prenda y luego elegir una parte del cuerpo de {O} (no íntima) para acariciar durante 10 segundos.",
+"Verdad: {V}, ¿has fantaseado alguna vez con {O} en un contexto que no fuera estrictamente platónico?",
+"Reto: {O} bebe y se quita otra prenda. Luego debe acercarse a {V} y susurrarle al oído una palabra que le excite.",
+"Verdad: {O}, si tuvieras que señalar una parte de tu cuerpo que te gustaría que {V} notara más, ¿cuál sería?",
+"Reto: {V} bebe, se quita una prenda y debe usar sus pies para quitarle una prenda a {O}.",
+"Verdad: {V}, ¿alguna vez la curiosidad sobre {O} ha traspasado los límites de lo que considerarías \"normal\" en una amistad?",
+"Reto: {O} bebe, se quita una prenda y debe elegir una zona del cuello o los hombros de {V} para darle un lametazo de 5 segundos.",
+"Verdad: {O}, si te pidieran describir una fantasía involving a {V}, ¿qué elemento incluirías?",
+"Reto: {V} bebe, se quita una prenda y debe guiñar un ojo a {O} mientras se toca una parte de su propio cuerpo que le guste.",
+"Verdad: {V}, ¿has hecho algo alguna vez con la intención de provocar una reacción física en {O}?",
+"Reto: {O} bebe, se quita una prenda y debe poner las manos de {V} en sus pechos/pectorales durante 15 segundos.",
+"Verdad: {O}, si grabaras un video íntimo, ¿te sentirías más cómodo/a si {V} estuviera detrás o delante de la cámara?",
+"Reto: {V} bebe, se quita una prenda y debe morderle suavemente el lóbulo de la oreja a {O}.",
+"Verdad: {V}, ¿has imaginado alguna vez un escenario con {O} en un lugar poco unconventional?",
+"Reto: {O} bebe, se quita una prenda y debe acostarse en el regazo de {V} y moverse sensualmente durante 20 segundos.",
+"Verdad: {O}, ¿hasta dónde llegarías para explorar la tensión sexual con {V} si ambos quisierais?",
+"Reto: {V} bebe, se quita la última prenda que le quede y debe dejar que {O} explore su cuerpo con los ojos vendados durante 30 segundos.",
+"Verdad: {V}, ¿has pensado en {O} de forma sexual esta semana?",
+"Reto: {O} le da un trago a {V} y luego susurrarle al oído la primera cosa sexual que te imaginas de él/ella.",
+"Verdad: {O}, ¿qué prenda de {V} te gustaría ver en el suelo ahora mismo?",
+"Reto: {V} bebe y luego elige una prenda de {O} para quitarle. {O} debe quitársela lentamente.",
+"Verdad: {V}, ¿alguna vez has sentido una reacción física en presencia de {O} que te haya sorprendido?",
+"Verdad: {O}, describe una fantasía que tengas y que incluya a {V}.",
+"Reto: {O} le da un trago a {V}. Luego, con los ojos vendados, {V} debe usar solo su boca para adivinar qué parte del cuerpo de {O} está tocando.",
+"Verdad: {V}, ¿te has planteado un trío con {O} y otra persona?",
+"Reto: {O} debe poner música y {V} debe hacer un striptease de una prenda, terminando en ropa interior.",
+"Verdad: {O}, si tuvieras que elegir una posición para tener sexo con {V} solo una vez, ¿cuál sería y por qué?",
+"Reto: {V} bebe y se quita una prenda. Debe poner sus manos en los genitales de {O} (por encima de la ropa) y masajear durante 30 segundos.",
+"Verdad: {O}, ¿alguna vez has visto a {V} en una situación íntima o accidentalmente desnudo/a?",
+"Reto: {V} debe elegir una canción y simular que está grabando un video de twerking para {O} durante 45 segundos.",
+"Verdad: {V}, ¿alguna vez has tocado tus genitales mientras hablabas por teléfono con {O}?",
+"Reto: {O} le da un trago a {V} y luego le quita una prenda. {O} debe acariciarle el sexo por encima de la ropa durante 20 segundos.",
+"Reto: {V} debe grabar un video de 15 segundos masturbándose (sobre la ropa o no, como elija) y enviárselo a {O}.",
+"Verdad: {O}, ¿qué harías si te encontraras a {V} masturbándose y te pidiera ayuda?",
+"Reto: {V} debe guiar a {O} hasta una ventana o balcón (con cuidado de no ser visto por extraños) y {O} debe darle un beso en los glúteos.",
+"Verdad: {V}, ¿alguna vez has mencionado el nombre de {O} durante un momento íntimo con otra persona?",
+"Reto: Ambos beben. {V} debe bajar con la boca desde el pecho de {O} hasta el borde de su ropa interior, dejando un rastro de besos.",
+"Reto: {O} debe crear una cuenta de OnlyFans (o similar) temporal y {V} debe tomarle una foto íntima (no necesariamente explícita) para subirla como \"preview\".",
+"Verdad: {V}, ¿te excita la idea de grabar un video sexual con {O}?",
+"Reto: {V} bebe. {O} debe tumbarse y {V} debe usar sus dedos para estimularle directamente hasta que esté a punto de alcanzar el orgasmo.",
+"Reto: {O} debe guiar a {V} a la puerta de su casa o del apartamento. {V} debe masturbarse hasta casi llegar al clímax, deteniéndose justo antes.",
+"Verdad: {O}, ¿te excita la idea de una fantasía donde pierdes el control con {V}?",
+"Reto: {V} debe grabar un video de 1 minuto dándole sexo oral a {O}.",
+"Verdad: {O}, ¿alguna vez has fantaseado con ver a {V} en una situación de sumisión con otras personas",
+"Reto: {O} debe atar suavemente las manos de {V} a la cabecera de la cama y darle sexo oral hasta que {V} pida parar o llegue al clímax.",
+"Reto: {V} debe arrodillarse frente a {O} y pedirle permiso para darle sexo oral. {O} debe negarse tres veces antes de concedérselo.",
+"Reto: {O} debe tumbarse boca arriba y {V} debe montarle. Mientras {V} se masturra, {O} debe introducir un dedo en su ano.",
+"Reto: {V} debe elegir una habitación de la casa (salón, cocina, baño) y {O} debe tener sexo con él/ella en esa habitación, con las cortinas abiertas.",
+"Reto: {V} debe usar un vibrador en sí mismo mientras {O} lo controla con el mando a distancia.",
+"Reto: {O} debe tumbarse boca arriba y {V} debe darle un masaje prostático hasta que {O} eyacule.",
+"Reto: {V} y {O} deben tener sexo en la posición del cuchara (spooning) durante 10 minutos sin cambiar de postura.",
+"Reto: {V} y {O} deben darse sexo oral simultáneamente en la posición 69 hasta que ambos lleguen al clímax.",
+"Reto: {O} debe penetrar analmente a {V} durante 5 minutos en la posición que {V} elija.",
+"Reto: {V} debe llevar a {O} al balcón y tener sexo allí durante 10 minutes.",
+"Reto: {V} y {O} deben invitar a una tercera persona a unirse a su actividad sexual.",
+"Reto: {O} debe usar alimentos (como fresas, nata, chocolate) para decorar el cuerpo de {V} y luego lamerlos.",
+"Reto: {V} debe usar un objeto (como una zanahoria, un pepino, un vibrador) para penetrar a {O}.",
+"Reto: {V} y {O} deben tener sexo con la ropa puesta, sin quitarse ninguna prenda.",
+"Reto: {O} y {V} deben tener sexo sin usar las manos, solo usando sus bocas, pechos, piernas y otras partes del cuerpo.",
+"Reto: {V} y {O} deben tener sexo frente a un espejo, observándose mutuamente.",
+"Reto: {V} debe grabar a {O} mientras tiene sexo con otra persona.",
+"Reto: {V} y {O} deben tener sexo al ritmo de una canción, sincronizando sus movimientos con la música.",
+"Reto: {V} debe vendar los ojos a {O} y tener sexo con él/ella, cambiando de posición cada 2 minutos sin que {O} sepa qué viene después.",
+"Reto: {O} debe poner una mordaza a {V} y tener sexo con él/ella, impidiéndole hablar o gemir.",
+"Reto: {V} debe poner pinzas en los pezones de {O} y tener sexo con él/ella, retirando las pinzas en el momento del clímax.",
+"Reto: {O} debe derramar cera caliente sobre el cuerpo de {V} y luego tener sexo con él/ella.",
+"Reto: {V} debe pasar un cubito de hielo por el cuerpo de {O} y luego tener sexo con él/ella.",
+"Reto: {O} debe azotar suavemente a {V} con un látigo o fusta y luego tener sexo con él/ella.",
+"Reto: {V} debe convertirse en el esclavo sexual de {O} durante 1 hora, cumpliendo todos sus deseos.",
+"Reto: {O} debe convertirse en el amo sexual de {V} durante 1 hora, ordenándole hacer todo lo que quiera.",
+"Reto: {V} debe humillar verbalmente a {O} durante el sexo, llamándolo nombres y degradándolo.",
+"Reto: {O} debe adorar el cuerpo de {V} durante el sexo, besando y lamiendo cada parte de su cuerpo.",
+"Reto: {V} y {O} deben representar un escenario de fantasía (como médico-paciente, profesor-alumno) y tener sexo dentro de ese rol.",
+"Reto: {V} debe revelar su fetiche favorito y {O} debe satisfacerlo durante el sexo."
+];
+
 let usedNormalCards=[];
 let usedPicanteCards=[];
+let currentHardcoreIndex=0;
 let playerVCounts = {};
 const tarjetaEspecialTurno4 = "¡RETO ESPECIAL ACUMULATIVO! {V} ha alcanzado su cuarto turno bajo control. Como castigo directo, {V} di si alguna vez has tenido un sueño erótico sexual con {O}, en caso de que la respuesta sea si, {O} puede pedir detalles solo si responde la misma pregunta.";
 
@@ -396,10 +477,16 @@ function getCard(){
             rawText = sexualCards[sexualCards.length-1].text;
             imgUrl = sexualCards[sexualCards.length-1].img;
         }
-    }else if (!climaxMode && playerVCounts[v] === 4 && v === players[0]) {
+    }else if (!climaxMode && playerVCounts[v] === 4 && v === players[0] && selectedVersion !== "hardcore") {
         rawText = tarjetaEspecialTurno4;
     }else{
-        if(selectedVersion === "picante"){
+        if(selectedVersion === "hardcore"){
+            if(currentHardcoreIndex >= hardcoreCards.length){
+                currentHardcoreIndex = 0;
+            }
+            rawText = hardcoreCards[currentHardcoreIndex];
+            currentHardcoreIndex++;
+        }else if(selectedVersion === "picante"){
             if(usedPicanteCards.length === tusPreguntasPicantes.length){
                 usedPicanteCards = [];
             }
@@ -439,11 +526,9 @@ function getCard(){
         consQ.innerHTML = `<strong>Disfrutad de la noche</strong>`;
     }else{
         if(selectedVersion === "normal"){
-            // VERSIÓN NORMAL CON PENITENCIA EVOLUTIVA POR TARJETA
             if(cardCount < 10) {
                 consQ.innerHTML = `<strong>EL PRECIO DE FALLAR EL RETO:</strong><br>• Si no logras cumplir el reto sensorial o responder bien, te quitas 1 prenda 👙 o tomas 2 tragos largos 🍻 (A elección del rival).`;
             } else {
-                // A partir de la tarjeta 10: Aleatoriedad absoluta
                 let randomPenalty = Math.random() < 0.75 ? "prenda" : "trago";
                 if(randomPenalty === "prenda") {
                     consQ.innerHTML = `<strong>EL PRECIO DE FALLAR EL RETO (Suerte Aleatoria 🎲):</strong><br>• ¡Mala suerte! Si fallas el reto, debes quitarte 1 prenda 👙 obligatoriamente.`;
@@ -451,8 +536,7 @@ function getCard(){
                     consQ.innerHTML = `<strong>EL PRECIO DE FALLAR EL RETO (Suerte Aleatoria 🎲):</strong><br>• ¡Te has salvado de la ropa! Si fallas el reto, debes tomar 2 tragos largos 🍻.`;
                 }
             }
-        } else {
-            // VERSIÓN PICANTE CONTROLADA CON ROTACIÓN DE 4 ESTADOS:
+        } else if(selectedVersion === "picante") {
             if(penitenceToggle === 0){
                 consQ.innerHTML = `<strong>EL PRECIO DE LA VERDAD (Fase Alcohol):</strong><br>• Si <strong>${v.toUpperCase()}</strong> responde: Toma 1 trago corto 🍻.<br>• Si se niega: Bebe 3 tragos de golpe.`;
                 penitenceToggle = 1;
@@ -466,6 +550,8 @@ function getCard(){
                 consQ.innerHTML = `<strong>EL PRECIO DE LA VERDAD (Fase Apuesta Máxima):</strong><br>• Si <strong>${v.toUpperCase()}</strong> responde: <strong>${o}</strong> te quita 1 prenda.<br>• Si se niega: ¡Te quitas 2 prendas tú mismo/a!`;
                 penitenceToggle = 0;
             }
+        } else {
+            consQ.innerHTML = `<strong>REGLAS HARDCORE 🔞:</strong><br>• Cumplid la tarjeta al pie de la letra.<br>• Si os negáis: ¡Castigo de 2 prendas o 4 tragos masivos! 🍻👙`;
         }
     }
     document.getElementById('turnIndicator').textContent = `Turno de: ${v} (Tarjeta #${cardCount})`;
